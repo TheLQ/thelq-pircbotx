@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.thelq</groupId>
+	<artifactId>pircbotx</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>TheLQ-Pircbotx</name>
+	<url>https://code.google.com/p/lq-projects/</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/etc</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<!--Makes sure License Headers are consistant across all files-->
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.10.b1</version>
+				<configuration>
+					<header>src/etc/license-header.txt</header>
+					<properties>
+						<email>lord.quackstar at gmail.com</email>
+						<name>Leon Blakey</name>
+						<year>2011</year>
+						<projectname>Quackbot</projectname>
+					</properties>
+					<excludes>
+						<exclude>**/*.txt</exclude>
+						<exclude>**/*.log</exclude>
+						<exclude>**/nbactions.xml</exclude>
+					</excludes>
+					<strictCheck>true</strictCheck>
+					<aggregate>true</aggregate>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- The bot -->
+		<dependency>
+			<groupId>org.pircbotx</groupId>
+			<artifactId>pircbotx</artifactId>
+			<version>1.7</version>
+		</dependency>
+	</dependencies>
+</project>
