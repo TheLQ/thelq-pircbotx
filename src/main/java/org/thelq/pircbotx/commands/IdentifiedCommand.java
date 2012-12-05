@@ -16,36 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with Quackbot. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thelq.pircbotx;
+package org.thelq.pircbotx.commands;
 
-import org.pircbotx.MultiBotManager;
-import org.thelq.pircbotx.commands.IdentifiedCommand;
-import org.thelq.pircbotx.commands.HelpCommand;
+import lombok.Getter;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.thelq.pircbotx.BasicCommand;
 
 /**
- * Main class
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Main {
-	public static void main(String[] args) {
-		//Might have multiple bots in the future
-		MultiBotManager manager = new MultiBotManager("TheLQ-Pircbotx");
-		manager.setLogin("LQ");
-		manager.setVerbose(true);
-		manager.setAutoNickChange(true);
-		
-		//Servers
-		manager.createBot("irc.freenode.org").addChannel("#pircbotx");
-		
-		//Various Listeners and commands
-		manager.getListenerManager().addListener(new HelpCommand());
-		manager.getListenerManager().addListener(new IdentifiedCommand());
-		
-		//Connect
-		try {
-			manager.connectAll();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+public class IdentifiedCommand extends ListenerAdapter implements BasicCommand {
+	@Getter
+	public String help = "Are you identified with NickServ?";
+
+	@Override
+	public void onMessage(MessageEvent event) throws Exception {
+		if (event.getMessage().startsWith("?identified"))
+			event.respond(event.getUser().isVerified() ? "You are identified" : "You are not identified");
 	}
 }
