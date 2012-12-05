@@ -19,6 +19,8 @@
 package org.thelq.pircbotx;
 
 import org.pircbotx.MultiBotManager;
+import org.thelq.pircbotx.commands.IdentifiedCommand;
+import org.thelq.pircbotx.commands.HelpCommand;
 
 /**
  * Main class
@@ -34,6 +36,9 @@ public class Main {
 		
 		//Servers
 		manager.createBot("irc.freenode.org").addChannel("#pircbotx");
+		
+		//Various Listeners and commands
+		manager.getListenerManager().addListener(new HelpCommand());
 		
 		//Connect
 		try {
