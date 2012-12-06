@@ -19,8 +19,8 @@
 package org.thelq.pircbotx;
 
 import org.pircbotx.MultiBotManager;
-import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
+import org.thelq.pircbotx.commands.IdentifiedCommand;
 
 /**
  * Main class
