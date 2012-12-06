@@ -29,7 +29,7 @@ import org.thelq.pircbotx.BasicCommand;
  */
 public class IdentifiedCommand extends ListenerAdapter implements BasicCommand {
 	@Getter
-	public String help = "Are you identified with NickServ?";
+	protected String help = "Are you identified with NickServ?";
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {

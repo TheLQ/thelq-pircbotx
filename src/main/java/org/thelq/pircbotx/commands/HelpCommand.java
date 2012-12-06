@@ -34,7 +34,7 @@ import org.thelq.pircbotx.BasicCommand;
  */
 public class HelpCommand extends ListenerAdapter implements BasicCommand {
 	@Getter
-	public String help = "Show commands and help for them";
+	protected String help = "Show commands and help for them";
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
