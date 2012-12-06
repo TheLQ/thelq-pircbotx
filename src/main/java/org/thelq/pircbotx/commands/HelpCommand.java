@@ -52,9 +52,13 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 					continue;
 
 				BasicCommand command = (BasicCommand) curListener;
-				if (StringUtils.startsWithIgnoreCase(getCommandName(command), messageParts[1]))
+				if (StringUtils.startsWithIgnoreCase(getCommandName(command), messageParts[1])) {
 					//Found it!
 					event.respond(getCommandName(command) + " help: " + command.getHelp());
+					return;
+				}
+				//If we get here then nothing was found
+				event.respond("Command " + messageParts[1] + " doesn't exist");
 			}
 		else {
 			//Build a list of names of all the available commands
