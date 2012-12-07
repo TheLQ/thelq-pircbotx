@@ -33,7 +33,7 @@
 						<email>lord.quackstar at gmail.com</email>
 						<name>Leon Blakey</name>
 						<year>2011</year>
-						<projectname>Quackbot</projectname>
+						<projectname>TheLQ-PircBotX</projectname>
 					</properties>
 					<excludes>
 						<exclude>**/*.txt</exclude>
