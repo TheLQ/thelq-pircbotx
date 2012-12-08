@@ -21,6 +21,8 @@ package org.thelq.pircbotx;
 import org.pircbotx.MultiBotManager;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
+import org.thelq.pircbotx.commands.LevelsListCommand;
+import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.UptimeCommand;
 
 /**
@@ -42,6 +44,7 @@ public class Main {
 		manager.getListenerManager().addListener(new HelpCommand());
 		manager.getListenerManager().addListener(new IdentifiedCommand());
 		manager.getListenerManager().addListener(new UptimeCommand());
+		manager.getListenerManager().addListener(new LevelsListCommand());
 		
 		//Connect
 		try {
