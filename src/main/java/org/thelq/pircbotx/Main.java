@@ -18,6 +18,7 @@
  */
 package org.thelq.pircbotx;
 
+import java.util.Properties;
 import org.pircbotx.MultiBotManager;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -30,16 +31,20 @@ import org.thelq.pircbotx.commands.UptimeCommand;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Main {
-	public static void main(String[] args) {
-		//Might have multiple bots in the future
+	public static void main(String[] args) throws Exception {
+		//Initial configuration
 		MultiBotManager manager = new MultiBotManager("TheLQ-Pircbotx");
 		manager.setLogin("LQ");
 		manager.setVerbose(true);
 		manager.setAutoNickChange(true);
 		
+		//Load nickserv data
+		Properties passwords = new Properties();
+		passwords.load(Main.class.getResourceAsStream("/nickserv.properties"));
+		
 		//Servers
-		manager.createBot("irc.freenode.org").addChannel("#pircbotx");
-		manager.createBot("irc.swiftirc.net").addChannel("#pircbotx");
+		manager.createBot("irc.freenode.org").addChannel("#pircbotx").getBot().identify(passwords.getProperty("freenode"));
+		manager.createBot("irc.swiftirc.net").addChannel("#pircbotx").getBot().identify(passwords.getProperty("swiftirc"));
 		
 		//Various Listeners and commands
 		manager.getListenerManager().addListener(new HelpCommand());
