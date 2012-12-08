@@ -23,9 +23,8 @@ public class MyLevelsCommand extends ListenerAdapter implements BasicCommand {
 
 		//Which user are we getting info for
 		String[] messageParts = event.getMessage().split(" ");
-		User user = event.getUser();
-		if (messageParts.length == 2 && messageParts[1].equalsIgnoreCase("bot"))
-			user = event.getBot().getUserBot();
+		boolean isBot = messageParts.length == 2 && messageParts[1].equalsIgnoreCase("bot");
+		User user = isBot ? event.getBot().getUserBot() : event.getUser();
 
 		List<String> modes = new ArrayList();
 		if (event.getChannel().isOp(user))
@@ -38,6 +37,6 @@ public class MyLevelsCommand extends ListenerAdapter implements BasicCommand {
 			modes.add("superop");
 		if (event.getChannel().isHalfOp(user))
 			modes.add("halfop");
-		event.respond("You are: " + modes.toString());
+		event.respond((isBot ? "I am" : "You are") + ": " + modes.toString());
 	}
 }
