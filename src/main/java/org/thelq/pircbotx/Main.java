@@ -45,6 +45,7 @@ public class Main {
 		manager.getListenerManager().addListener(new IdentifiedCommand());
 		manager.getListenerManager().addListener(new UptimeCommand());
 		manager.getListenerManager().addListener(new LevelsListCommand());
+		manager.getListenerManager().addListener(new MyLevelsCommand());
 		
 		//Connect
 		try {
