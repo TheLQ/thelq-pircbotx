@@ -39,6 +39,7 @@ public class Main {
 		
 		//Servers
 		manager.createBot("irc.freenode.org").addChannel("#pircbotx");
+		manager.createBot("irc.swiftirc.net").addChannel("#pircbotx");
 		
 		//Various Listeners and commands
 		manager.getListenerManager().addListener(new HelpCommand());
