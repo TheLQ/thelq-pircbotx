@@ -39,7 +39,7 @@ PIDFILE=$ROOT/pircbotx.pid
 if [ -f $PIDFILE ]; then
     PID=$(cat $PIDFILE);
     echo "Stopping TheLQ-PircBotx at PID $PID ..."
-    kill $PID;
+    kill -9 $PID;
     echo "TheLQ-PircBotx stopped ..."
     rm $PIDFILE
 fi
