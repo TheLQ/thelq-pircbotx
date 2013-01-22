@@ -132,7 +132,7 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 
 	protected static void respondNow(MessageEvent event, String message) {
 		//The send method chain sends via queue, we need to skip that
-		event.getBot().sendRawLine("PRIVMSG " + event.getChannel().getName() + " :"
+		event.getBot().sendRawLineNow("PRIVMSG " + event.getChannel().getName() + " :"
 				+ event.getUser().getNick() + ": " + message);
 	}
 }
