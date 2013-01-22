@@ -112,7 +112,7 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 			Period remainingPeriod = new Period(curDateTime, endDate);
 			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
 				//Done
-				return;
+				break;
 			else
 				respondNow(event, "Remaining: " + periodFormatterMinSec.print(remainingPeriod));
 			lastDateTime = curDateTime;
