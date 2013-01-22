@@ -20,6 +20,7 @@ package org.thelq.pircbotx;
 
 import java.util.Properties;
 import org.pircbotx.MultiBotManager;
+import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
@@ -52,6 +53,7 @@ public class Main {
 		manager.getListenerManager().addListener(new UptimeCommand());
 		manager.getListenerManager().addListener(new LevelsListCommand());
 		manager.getListenerManager().addListener(new MyLevelsCommand());
+		manager.getListenerManager().addListener(new CountdownCommand());
 		
 		//Connect
 		try {
