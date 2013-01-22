@@ -86,6 +86,7 @@
 					<outputDirectory>target/delombok</outputDirectory>
 				</configuration>
 			</plugin>
+			<!-- Make a final single jar -->
 			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>1.5</version>
@@ -113,17 +114,20 @@
 	</build>
 
 	<dependencies>
+		<!-- Our IRC Library -->
 		<dependency>
 			<groupId>org.pircbotx</groupId>
 			<artifactId>pircbotx</artifactId>
 			<version>1.8-SNAPSHOT</version>
 		</dependency>
+		<!-- Magic Annotiation Processor -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>0.11.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Helpful Utilities -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
