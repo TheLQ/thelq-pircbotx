@@ -48,16 +48,16 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 
 	static {
 		driftFormatter = new PeriodFormatterBuilder()
-				.appendMinutes().appendSuffix("min")
-				.appendSeconds().appendSuffix("sec")
+				.appendMinutes().appendSuffix("m")
+				.appendSeconds().appendSuffix("s")
 				.appendMillis().appendSuffix("ms")
 				.toFormatter();
 		periodFormatterSec = new PeriodFormatterBuilder()
-				.appendSeconds().appendSuffix("sec")
+				.appendSeconds().appendSuffix("s")
 				.toFormatter();
 		periodFormatterMinSec = new PeriodFormatterBuilder()
-				.appendMinutes().appendSuffix("min")
-				.appendSeconds().appendSuffix("sec")
+				.appendMinutes().appendSuffix("m")
+				.appendSeconds().appendSuffix("s")
 				.toFormatter();
 	}
 
