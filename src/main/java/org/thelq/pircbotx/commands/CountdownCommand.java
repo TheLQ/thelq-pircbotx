@@ -91,18 +91,18 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 
 		//Register times we want to notify the user
 		List<DateTime> notifyTimes = new ArrayList();
-		registerTime(notifyTimes, startDate, endDate, 0);
-		registerTime(notifyTimes, startDate, endDate, 2);
-		registerTime(notifyTimes, startDate, endDate, 5);
-		registerTime(notifyTimes, startDate, endDate, 10);
-		registerTime(notifyTimes, startDate, endDate, 30);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 0);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 2);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 5);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 10);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 30);
 		for (int i = 1; i <= (remainingSeconds % 60); i++)
-			registerTime(notifyTimes, startDate, endDate, i * 60);
+			CountdownUtils.registerTime(notifyTimes, startDate, endDate, i * 60);
 
 		//Reverse the list so they can be loaded in the correct order (easier to write in reverse above)
 		Collections.reverse(notifyTimes);
 
-		respondNow(event, "Waiting: " + periodFormatterMinSec.print(parsePeriod) + " (" + remainingSeconds + " seconds)");
+		CountdownUtils.respondNow(event, "Waiting: " + periodFormatterMinSec.print(parsePeriod) + " (" + remainingSeconds + " seconds)");
 
 		DateTime lastDateTime = startDate;
 		for (DateTime curDateTime : notifyTimes) {
@@ -114,25 +114,12 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 				//Done
 				break;
 			else
-				respondNow(event, "Remaining: " + periodFormatterMinSec.print(remainingPeriod));
+				CountdownUtils.respondNow(event, "Remaining: " + periodFormatterMinSec.print(remainingPeriod));
 			lastDateTime = curDateTime;
 		}
 
 		DateTime realEndDate = new DateTime();
 		Period drift = new Period(endDate, realEndDate);
-		respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
-	}
-
-	protected static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
-		//If the requested seconds is still in the period, add to list
-		DateTime notifyTime = endDate.minusSeconds(seconds);
-		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
-			notifyTimes.add(notifyTime);
-	}
-
-	protected static void respondNow(MessageEvent event, String message) {
-		//The send method chain sends via queue, we need to skip that
-		event.getBot().sendRawLineNow("PRIVMSG " + event.getChannel().getName() + " :"
-				+ event.getUser().getNick() + ": " + message);
+		CountdownUtils.respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
 	}
 }
