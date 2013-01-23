@@ -4,8 +4,12 @@
  */
 package org.thelq.pircbotx.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.Seconds;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -32,6 +36,44 @@ public class CountdownUtils {
 				.appendMinutes().appendSuffix("m")
 				.appendSeconds().appendSuffix("s")
 				.toFormatter();
+	}
+
+	protected static void countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
+		DateTime startDate = new DateTime();
+		Period period = new Period(startDate, endDate);
+		int periodSeconds = period.toStandardSeconds().getSeconds();
+		//Register times we want to notify the user
+		List<DateTime> notifyTimes = new ArrayList();
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 0);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 2);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 5);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 10);
+		CountdownUtils.registerTime(notifyTimes, startDate, endDate, 30);
+		for (int i = 1; i <= (periodSeconds % 60); i++)
+			CountdownUtils.registerTime(notifyTimes, startDate, endDate, i * 60);
+
+		//Reverse the list so they can be loaded in the correct order (easier to write in reverse above)
+		Collections.reverse(notifyTimes);
+
+		CountdownUtils.respondNow(event, "Waiting: " + periodFormatterMinSec.print(period) + " (" + periodSeconds + " seconds)");
+
+		DateTime lastDateTime = startDate;
+		for (DateTime curDateTime : notifyTimes) {
+			int waitPeriod = Seconds.secondsBetween(lastDateTime, curDateTime).getSeconds() * 1000;
+			event.getBot().log("--- Waiting: " + waitPeriod);
+			Thread.sleep(waitPeriod);
+			Period remainingPeriod = new Period(curDateTime, endDate);
+			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
+				//Done
+				break;
+			else
+				CountdownUtils.respondNow(event, "Remaining: " + periodFormatterMinSec.print(remainingPeriod));
+			lastDateTime = curDateTime;
+		}
+
+		DateTime realEndDate = new DateTime();
+		Period drift = new Period(endDate, realEndDate);
+		CountdownUtils.respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
 	}
 
 	protected static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
