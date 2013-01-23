@@ -38,7 +38,7 @@ public class CountdownUtils {
 				.toFormatter();
 	}
 
-	protected static void countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
+	protected static DateTime countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
 		DateTime startDate = new DateTime();
 		Period period = new Period(startDate, endDate);
 		int periodSeconds = period.toStandardSeconds().getSeconds();
@@ -71,9 +71,7 @@ public class CountdownUtils {
 			lastDateTime = curDateTime;
 		}
 
-		DateTime realEndDate = new DateTime();
-		Period drift = new Period(endDate, realEndDate);
-		CountdownUtils.respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
+		return new DateTime();
 	}
 
 	protected static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {

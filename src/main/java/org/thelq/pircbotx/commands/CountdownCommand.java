@@ -87,6 +87,9 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 		}
 
 		DateTime endDate = new DateTime().plus(parsePeriod);
-		CountdownUtils.countdown(event, endDate);
+		DateTime realEndDate = CountdownUtils.countdown(event, endDate);
+		
+		Period drift = new Period(endDate, realEndDate);
+		CountdownUtils.respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
 	}
 }
