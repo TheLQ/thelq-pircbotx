@@ -21,6 +21,7 @@ package org.thelq.pircbotx.commands;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
@@ -39,6 +40,15 @@ public class CountdownUtils {
 	protected static PeriodFormatter periodFormatterSec;
 	protected static PeriodFormatter periodFormatterMinSec;
 	protected static DateTimeFormatter tzOffsetFormatter;
+	@Getter
+	protected static PeriodFormatter remainFormatter = new PeriodFormatterBuilder()
+			.appendMonths().appendSuffix("months ")
+			.appendWeeks().appendSuffix("weeks ")
+			.appendDays().appendSuffix("days ")
+			.appendHours().appendSuffix("hours")
+			.appendMinutes().appendSuffix("minutes ")
+			.appendSeconds().appendSuffix("seconds ")
+			.toFormatter();
 
 	static {
 		driftFormatter = new PeriodFormatterBuilder()
