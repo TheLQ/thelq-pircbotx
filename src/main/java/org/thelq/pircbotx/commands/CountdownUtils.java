@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.Seconds;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -35,6 +38,7 @@ public class CountdownUtils {
 	protected static PeriodFormatter driftFormatter;
 	protected static PeriodFormatter periodFormatterSec;
 	protected static PeriodFormatter periodFormatterMinSec;
+	protected static DateTimeFormatter tzOffsetFormatter;
 
 	static {
 		driftFormatter = new PeriodFormatterBuilder()
@@ -48,6 +52,9 @@ public class CountdownUtils {
 		periodFormatterMinSec = new PeriodFormatterBuilder()
 				.appendMinutes().appendSuffix("m")
 				.appendSeconds().appendSuffix("s")
+				.toFormatter();
+		tzOffsetFormatter = new DateTimeFormatterBuilder()
+				.appendTimeZoneOffset(null, true, 2, 4)
 				.toFormatter();
 	}
 
@@ -93,7 +100,18 @@ public class CountdownUtils {
 		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
 			notifyTimes.add(notifyTime);
 	}
-	
+
+	public static String getUTCOffset(DateTimeZone tz) {
+		long millis = System.currentTimeMillis();
+		while (tz.getOffset(millis) != tz.getStandardOffset(millis)) {
+			long next = tz.nextTransition(millis);
+			if (next == millis)
+				break;
+			millis = next;
+		}
+		return tzOffsetFormatter.withZone(tz).print(millis);
+	}
+
 	public interface CountdownHandler {
 		public void onStart(int secondsTillNotify);
 		public void onNotifyBefore(int secondsToWait);
