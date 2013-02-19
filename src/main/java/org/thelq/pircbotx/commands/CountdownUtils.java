@@ -52,7 +52,7 @@ public class CountdownUtils {
 				.toFormatter();
 	}
 
-	protected static DateTime countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
+	public static DateTime countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
 		DateTime startDate = new DateTime();
 		Period period = new Period(startDate, endDate);
 		int periodSeconds = period.toStandardSeconds().getSeconds();
@@ -88,14 +88,14 @@ public class CountdownUtils {
 		return new DateTime();
 	}
 
-	protected static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
+	public static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
 		//If the requested seconds is still in the period, add to list
 		DateTime notifyTime = endDate.minusSeconds(seconds);
 		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
 			notifyTimes.add(notifyTime);
 	}
 
-	protected static void respondNow(MessageEvent event, String message) {
+	public static void respondNow(MessageEvent event, String message) {
 		//The send method chain sends via queue, we need to skip that
 		event.getBot().sendRawLineNow("PRIVMSG " + event.getChannel().getName() + " :" + message);
 	}
