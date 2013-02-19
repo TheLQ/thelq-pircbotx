@@ -114,8 +114,11 @@ public class CountdownUtils {
 
 	public interface CountdownHandler {
 		public void onStart(int secondsTillNotify);
+
 		public void onNotifyBefore(int secondsToWait);
+
 		public void onNotify(int secondsRemain);
+
 		public void onEnd();
 	}
 }
