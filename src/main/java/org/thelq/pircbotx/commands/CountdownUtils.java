@@ -26,7 +26,6 @@ import org.joda.time.Period;
 import org.joda.time.Seconds;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
@@ -52,7 +51,7 @@ public class CountdownUtils {
 				.toFormatter();
 	}
 
-	public static DateTime countdown(MessageEvent event, DateTime endDate) throws InterruptedException {
+	public static void countdown(DateTime endDate, CountdownHandler handler) throws InterruptedException {
 		DateTime startDate = new DateTime();
 		Period period = new Period(startDate, endDate);
 		int periodSeconds = period.toStandardSeconds().getSeconds();
@@ -69,23 +68,23 @@ public class CountdownUtils {
 		//Reverse the list so they can be loaded in the correct order (easier to write in reverse above)
 		Collections.reverse(notifyTimes);
 
-		CountdownUtils.respondNow(event, "Waiting: " + periodFormatterMinSec.print(period) + " (" + periodSeconds + " seconds)");
+		handler.onStart(periodSeconds);
 
 		DateTime lastDateTime = startDate;
 		for (DateTime curDateTime : notifyTimes) {
 			int waitPeriod = Seconds.secondsBetween(lastDateTime, curDateTime).getSeconds() * 1000;
-			event.getBot().log("--- Waiting: " + waitPeriod);
+			handler.onNotifyBefore(waitPeriod);
 			Thread.sleep(waitPeriod);
 			Period remainingPeriod = new Period(curDateTime, endDate);
 			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
 				//Done
 				break;
 			else
-				CountdownUtils.respondNow(event, "Remaining: " + periodFormatterMinSec.print(remainingPeriod));
+				handler.onNotify(remainingPeriod.toStandardSeconds().getSeconds());
 			lastDateTime = curDateTime;
 		}
 
-		return new DateTime();
+		handler.onEnd();
 	}
 
 	public static void registerTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
@@ -94,9 +93,11 @@ public class CountdownUtils {
 		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
 			notifyTimes.add(notifyTime);
 	}
-
-	public static void respondNow(MessageEvent event, String message) {
-		//The send method chain sends via queue, we need to skip that
-		event.getBot().sendRawLineNow("PRIVMSG " + event.getChannel().getName() + " :" + message);
+	
+	public interface CountdownHandler {
+		public void onStart(int secondsTillNotify);
+		public void onNotifyBefore(int secondsToWait);
+		public void onNotify(int secondsRemain);
+		public void onEnd();
 	}
 }
