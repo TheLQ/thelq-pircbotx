@@ -19,36 +19,43 @@
 package org.thelq.pircbotx.commands;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TreeMap;
-import lombok.Synchronized;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.joda.time.tz.NameProvider;
-import org.pircbotx.Channel;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.JoinEvent;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.PartEvent;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class NYEListener extends ListenerAdapter {
+public class NYEListener extends AbstractAlarmListener {
 	/**
 	 * Times of all NYE events relative to UTC and their timezone(s). Sorted for 
 	 * ease of access
 	 */
 	protected static final TreeMap<DateTime, List<DateTimeZone>> nyTimes = new TreeMap();
-	protected List<Channel> notifyChannels = new ArrayList();
 	protected static final int newYear;
+	protected static DateTimeFormatter tzOffsetFormatter = new DateTimeFormatterBuilder()
+			.appendTimeZoneOffset(null, true, 2, 4)
+			.toFormatter();
+	protected static PeriodFormatter driftFormatter = new PeriodFormatterBuilder()
+			.appendMinutes().appendSuffix("m")
+			.appendSeconds().appendSuffix("s")
+			.appendMillis().appendSuffix("ms")
+			.toFormatter();
+	protected boolean started = false;
+	protected List<String> tzLongNames = new ArrayList();
+	protected List<String> tzShortNames = new ArrayList();
+	protected String tzLongList;
+	protected List<DateTimeZone> tzEntries = new ArrayList();
 
 	static {
 		//Figure out what's the "new year" by rounding
@@ -71,44 +78,14 @@ public class NYEListener extends ListenerAdapter {
 	}
 
 	public NYEListener() {
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					runNYELoop();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
 	}
 
-	public void runNYELoop() throws InterruptedException {
-		for (final Map.Entry<DateTime, List<DateTimeZone>> curNyEntry : nyTimes.entrySet()) {
-			//Make sure the event hasn't passed
-			final DateTime nyLocal = curNyEntry.getKey().withZone(DateTimeZone.getDefault());
-			if (nyLocal.isAfter(DateTime.now()))
-				continue;
-
-			//Execute countdown for next NYE
-			runNYEHandler(nyLocal, curNyEntry.getValue());
-		}
-		System.out.println("NYE: No more NYE events to execute");
-	}
-
-	@Synchronized("notifyChannels")
-	protected void sendMessage(String message) {
-		for (Channel curChannel : notifyChannels)
-			curChannel.sendMessage(message);
-	}
-
-	public void runNYEHandler(DateTime nyTimeLocal, final List<DateTimeZone> timezones) throws InterruptedException {
+	@Override
+	public void onStart(DateTime alarmDate, int secondsTillNotify) {
 		//Build timezone name lists
-		final List<String> tzLongNames = new ArrayList();
-		final List<String> tzShortNames = new ArrayList();
 		NameProvider nameProvider = DateTimeZone.getNameProvider();
 		long curTimestamp = System.currentTimeMillis();
-		for (DateTimeZone curTz : timezones)
+		for (DateTimeZone curTz : tzEntries)
 			if (!StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/")) {
 				tzLongNames.add(nameProvider.getName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
 				tzShortNames.add(nameProvider.getShortName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
@@ -121,82 +98,56 @@ public class NYEListener extends ListenerAdapter {
 					.append(tzLongNames.get(i)).append(")")
 					.append(", ");
 		tzListBuilder.substring(0, -2);
-		final String tzLongList = tzListBuilder.toString();
+		tzLongList = tzListBuilder.toString();
 
-		CountdownUtils.countdown(nyTimeLocal, new CountdownUtils.CountdownHandler() {
-			boolean started = false;
+		log("Initialized NYE countdown for " + StringUtils.join(tzEntries, ", "));
 
-			@Override
-			public void onStart(int secondsTillNotify) {
-				log("Initialized NYE countdown for " + StringUtils.join(timezones, ", "));
-
-			}
-
-			@Override
-			public void onNotifyBefore(int secondsToWait) {
-				log("Waiting " + secondsToWait + " for next notify");
-			}
-
-			@Override
-			public void onNotify(int secondsRemain) {
-				if (!started) {
-					sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + tzLongList);
-					started = true;
-				}
-
-				//Theme the countdown
-				if (secondsRemain > 9)
-					sendMessage(CountdownUtils.getRemainFormatter().print(new Period(1000 * secondsRemain))
-							+ " till NYE for " + StringUtils.join(tzShortNames, ", "));
-				else if (secondsRemain < 9 && secondsRemain > 3)
-					sendMessage(secondsRemain + " seconds");
-				else if (secondsRemain == 3)
-					sendMessage("3!");
-				else if (secondsRemain == 3)
-					sendMessage("2!!");
-				else if (secondsRemain == 3)
-					sendMessage("1!!!");
-			}
-
-			@Override
-			public void onEnd() {
-				sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + tzLongList);
-			}
-
-			protected void log(String message) {
-				System.out.println("NYE(" + CountdownUtils.getUTCOffset(timezones.get(0)) + "): " + message);
-			}
-		});
 	}
 
 	@Override
-	public void onMessage(MessageEvent event) throws Exception {
+	public void onNotifyBefore(int secondsToWait) {
+		log("Waiting " + secondsToWait + " for next notify");
 	}
 
 	@Override
-	public void onJoin(JoinEvent event) throws Exception {
-		if (event.getUser().getNick().equals(event.getBot().getNick()))
-			//Its us, add to channels
-			synchronized (notifyChannels) {
-				notifyChannels.add(event.getChannel());
-			}
+	public void onNotify(int secondsRemain) {
+		if (!started) {
+			sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + tzLongList);
+			started = true;
+		}
+
+		//Theme the countdown
+		if (secondsRemain > 9)
+			sendMessage(getRemainFormatter().print(new Period(1000 * secondsRemain))
+					+ " till NYE for " + StringUtils.join(tzShortNames, ", "));
+		else if (secondsRemain < 9 && secondsRemain > 3)
+			sendMessage(secondsRemain + " seconds");
+		else if (secondsRemain == 3)
+			sendMessage("3!");
+		else if (secondsRemain == 3)
+			sendMessage("2!!");
+		else if (secondsRemain == 3)
+			sendMessage("1!!!");
 	}
 
 	@Override
-	public void onPart(PartEvent event) throws Exception {
-		if (event.getUser().getNick().equals(event.getBot().getNick()))
-			//Its us, remove from channels
-			synchronized (notifyChannels) {
-				notifyChannels.remove(event.getChannel());
-			}
+	public void onEnd(DateTime end) {
+		sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + tzLongList
+				+ "Drift: ");
 	}
 
-	@Override
-	@Synchronized("notifyChannels")
-	public void onDisconnect(DisconnectEvent event) throws Exception {
-		//We lost a bot, remove its channels
-		for (Iterator<Channel> itr = notifyChannels.iterator(); itr.hasNext();)
-			if (itr.next().getBot() == event.getBot())
-				itr.remove();
+	protected void log(String message) {
+		System.out.println("NYE(" + getUTCOffset(tzEntries.get(0)) + "): " + message);
+	}
+
+	public static String getUTCOffset(DateTimeZone tz) {
+		long millis = System.currentTimeMillis();
+		while (tz.getOffset(millis) != tz.getStandardOffset(millis)) {
+			long next = tz.nextTransition(millis);
+			if (next == millis)
+				break;
+			millis = next;
+		}
+		return tzOffsetFormatter.withZone(tz).print(millis);
 	}
 }
