@@ -59,10 +59,10 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 			.toFormatter();
 	@Getter
 	protected static PeriodFormatter driftFormatter = new PeriodFormatterBuilder()
-				.appendMinutes().appendSuffix("m")
-				.appendSeconds().appendSuffix("s")
-				.appendMillis().appendSuffix("ms")
-				.toFormatter();
+			.appendMinutes().appendSuffix("m")
+			.appendSeconds().appendSuffix("s")
+			.appendMillis().appendSuffix("ms")
+			.toFormatter();
 
 	public AbstractAlarmListener() {
 		new Thread() {
@@ -123,9 +123,9 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 
 		DateTime lastDateTime = startDate;
 		for (DateTime curDateTime : notifyTimes) {
-			int waitPeriod = Seconds.secondsBetween(lastDateTime, curDateTime).getSeconds() * 1000;
-			onNotifyBefore(alarmDate, waitPeriod);
-			Thread.sleep(waitPeriod);
+			long waitPeriodMilli = curDateTime.getMillis() - lastDateTime.getMillis();
+			onNotifyBefore(alarmDate, (int) waitPeriodMilli / 1000);
+			Thread.sleep(waitPeriodMilli);
 			Period remainingPeriod = new Period(curDateTime, alarmDate);
 			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
 				//Done
@@ -144,11 +144,11 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
 			notifyTimes.add(notifyTime);
 	}
-	
+
 	protected static void sendMessageNow(PircBotX bot, Channel chan, User user, String message) {
 		bot.sendRawLineNow("PRIVMSG " + chan.getName() + " :" + user.getNick() + ": " + message);
 	}
-	
+
 	protected static String calcDrift(DateTime alarmTime) {
 		return driftFormatter.print(new Period(alarmTime, DateTime.now()));
 	}
