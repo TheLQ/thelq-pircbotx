@@ -50,7 +50,6 @@ public class NYEListener extends AbstractAlarmListener {
 	protected List<String> tzLongNames = new ArrayList();
 	protected List<String> tzShortNames = new ArrayList();
 	protected String tzLongList;
-	protected List<DateTimeZone> tzEntries = new ArrayList();
 
 	static {
 		//Figure out what's the "new year" by rounding
@@ -82,11 +81,12 @@ public class NYEListener extends AbstractAlarmListener {
 		//Build timezone name lists
 		NameProvider nameProvider = DateTimeZone.getNameProvider();
 		long curTimestamp = System.currentTimeMillis();
-		for (DateTimeZone curTz : tzEntries)
-			if (!StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/")) {
-				tzLongNames.add(nameProvider.getName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
-				tzShortNames.add(nameProvider.getShortName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
-			}
+		for (List<DateTimeZone> curTzList : nyTimes.values())
+			for (DateTimeZone curTz : curTzList)
+				if (!StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/")) {
+					tzLongNames.add(nameProvider.getName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
+					tzShortNames.add(nameProvider.getShortName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
+				}
 
 		//Prebuild long form of timezones
 		StringBuilder tzListBuilder = new StringBuilder();
@@ -94,7 +94,7 @@ public class NYEListener extends AbstractAlarmListener {
 			tzListBuilder.append(tzShortNames.get(i)).append("(")
 					.append(tzLongNames.get(i)).append(")")
 					.append(", ");
-		tzListBuilder.substring(0, -2);
+		tzListBuilder.substring(0, tzListBuilder.length() - 2);
 		tzLongList = tzListBuilder.toString();
 
 		log("Initialized NYE countdown for " + StringUtils.join(tzEntries, ", "));
