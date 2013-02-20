@@ -15,6 +15,8 @@ import org.joda.time.Seconds;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -117,6 +119,10 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 		DateTime notifyTime = endDate.minusSeconds(seconds);
 		if (notifyTime.isAfter(startDate) || notifyTime.isEqual(startDate))
 			notifyTimes.add(notifyTime);
+	}
+	
+	protected static void sendMessageNow(PircBotX bot, Channel chan, User user, String message) {
+		bot.sendRawLineNow("PRIVMSG " + chan.getName() + " :" + user.getNick() + ": " + message);
 	}
 
 	@Override
