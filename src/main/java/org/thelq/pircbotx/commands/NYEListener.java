@@ -53,7 +53,7 @@ public class NYEListener extends AbstractAlarmListener {
 	static {
 		//Figure out what's the "new year" by rounding
 		DateTime curTime = DateTime.now(DateTimeZone.UTC);
-		newYear = (curTime.getMonthOfYear() < 6) ? curTime.getYear() : curTime.getYear() + 1;
+		newYear = curTime.getYear() + 1;
 
 		//Collect timezone data
 		for (String curId : DateTimeZone.getAvailableIDs()) {
