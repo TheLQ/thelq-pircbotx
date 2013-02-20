@@ -144,7 +144,7 @@ public class NYEListener extends AbstractAlarmListener {
 				break;
 			millis = next;
 		}
-		return tzOffsetFormatter.withZone(tz).print(millis);
+		return "UTC" + tzOffsetFormatter.withZone(tz).print(millis);
 	}
 
 	protected static String getExtendedNames(Collection<DateTimeZone> tzList) {
