@@ -25,6 +25,7 @@ import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
 import org.thelq.pircbotx.commands.MyLevelsCommand;
+import org.thelq.pircbotx.commands.NYEListener;
 import org.thelq.pircbotx.commands.UptimeCommand;
 
 /**
@@ -54,6 +55,7 @@ public class Main {
 		manager.getListenerManager().addListener(new LevelsListCommand());
 		manager.getListenerManager().addListener(new MyLevelsCommand());
 		manager.getListenerManager().addListener(new CountdownCommand());
+		manager.getListenerManager().addListener(new NYEListener());
 		
 		//Connect
 		try {
