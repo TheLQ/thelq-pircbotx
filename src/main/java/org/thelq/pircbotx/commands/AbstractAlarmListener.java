@@ -39,6 +39,12 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 			.appendMinutes().appendSuffix("minutes ")
 			.appendSeconds().appendSuffix("seconds ")
 			.toFormatter();
+	@Getter
+	protected static PeriodFormatter driftFormatter = new PeriodFormatterBuilder()
+				.appendMinutes().appendSuffix("m")
+				.appendSeconds().appendSuffix("s")
+				.appendMillis().appendSuffix("ms")
+				.toFormatter();
 
 	public AbstractAlarmListener() {
 		new Thread() {
@@ -123,6 +129,10 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 	
 	protected static void sendMessageNow(PircBotX bot, Channel chan, User user, String message) {
 		bot.sendRawLineNow("PRIVMSG " + chan.getName() + " :" + user.getNick() + ": " + message);
+	}
+	
+	protected static String calcDrift(DateTime alarmTime) {
+		return driftFormatter.print(new Period(alarmTime, DateTime.now()));
 	}
 
 	@Override
