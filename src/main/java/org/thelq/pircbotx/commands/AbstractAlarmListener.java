@@ -87,7 +87,7 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 			while (true) {
 				//Execute countdown for next NYE
 				DateTime nextAlarm = alarmTimes.take();
-				if (nextAlarm.isAfter(DateTime.now()))
+				if (nextAlarm.isBefore(DateTime.now()))
 					continue;
 				countdown(nextAlarm);
 			}
