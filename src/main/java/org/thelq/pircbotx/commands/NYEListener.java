@@ -107,12 +107,12 @@ public class NYEListener extends AbstractAlarmListener {
 	}
 
 	@Override
-	public void onNotifyBefore(int secondsToWait) {
+	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
 		log("Waiting " + secondsToWait + " for next notify");
 	}
 
 	@Override
-	public void onNotify(int secondsRemain) {
+	public void onNotify(DateTime alarmDate, int secondsRemain) {
 		if (!started) {
 			sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + tzLongList);
 			started = true;

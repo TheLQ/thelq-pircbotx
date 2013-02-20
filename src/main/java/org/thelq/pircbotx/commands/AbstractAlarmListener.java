@@ -98,20 +98,20 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 		DateTime lastDateTime = startDate;
 		for (DateTime curDateTime : notifyTimes) {
 			int waitPeriod = Seconds.secondsBetween(lastDateTime, curDateTime).getSeconds() * 1000;
-			onNotifyBefore(waitPeriod);
+			onNotifyBefore(alarmDate, waitPeriod);
 			Thread.sleep(waitPeriod);
 			Period remainingPeriod = new Period(curDateTime, alarmDate);
 			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
 				//Done
 				break;
 			else
-				onNotify(remainingPeriod.toStandardSeconds().getSeconds());
+				onNotify(alarmDate, remainingPeriod.toStandardSeconds().getSeconds());
 			lastDateTime = curDateTime;
 		}
 
 		onEnd(alarmDate);
 	}
-	
+
 	protected void registerNotifyTime(List<DateTime> notifyTimes, DateTime startDate, DateTime endDate, int seconds) {
 		//If the requested seconds is still in the period, add to list
 		DateTime notifyTime = endDate.minusSeconds(seconds);
@@ -149,12 +149,12 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 	public void onStart(DateTime alarmDate, int secondsTillNotify) {
 	}
 
-	public void onNotifyBefore(int secondsToWait) {
+	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
 	}
 
-	public void onNotify(int secondsRemain) {
+	public void onNotify(DateTime alarmDate, int secondsRemain) {
 	}
 
-	public void onEnd(DateTime origAlarmTime) {
+	public void onEnd(DateTime alarmDate) {
 	}
 }
