@@ -50,12 +50,12 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 	protected static AtomicInteger instances = new AtomicInteger(0);
 	@Getter
 	protected static PeriodFormatter remainFormatter = new PeriodFormatterBuilder()
-			.appendMonths().appendSuffix("months ")
-			.appendWeeks().appendSuffix("weeks ")
-			.appendDays().appendSuffix("days ")
-			.appendHours().appendSuffix("hours")
-			.appendMinutes().appendSuffix("minutes ")
-			.appendSeconds().appendSuffix("seconds ")
+			.appendMonths().appendSuffix(" month ", " months ")
+			.appendWeeks().appendSuffix(" week ", " weeks ")
+			.appendDays().appendSuffix(" day ", " days ")
+			.appendHours().appendSuffix(" hour ", " hours ")
+			.appendMinutes().appendSuffix(" minute ", " minutes ")
+			.appendSeconds().appendSuffix(" second ", " seconds ")
 			.toFormatter();
 	@Getter
 	protected static PeriodFormatter driftFormatter = new PeriodFormatterBuilder()
