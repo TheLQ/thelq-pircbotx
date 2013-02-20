@@ -135,7 +135,7 @@ public class NYEListener extends AbstractAlarmListener {
 	@Override
 	public void onEnd(DateTime end) {
 		sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + tzLongList
-				+ "Drift: ");
+				+ "Drift: " + calcDrift(end));
 	}
 
 	protected void log(String message) {
