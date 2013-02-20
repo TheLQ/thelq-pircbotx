@@ -97,13 +97,13 @@ public class NYEListener extends AbstractAlarmListener {
 		tzListBuilder.substring(0, tzListBuilder.length() - 2);
 		tzLongList = tzListBuilder.toString();
 
-		log("Initialized NYE countdown for " + StringUtils.join(tzEntries, ", "));
+		log(alarmDate, "Initialized NYE countdown for " + StringUtils.join(tzShortNames, ", "));
 
 	}
 
 	@Override
 	public void onNotifyBefore(DateTime alarmDate, long secondsToWait) {
-		log("Waiting " + secondsToWait + " seconds for next notify");
+		log(alarmDate, "Waiting " + secondsToWait + " seconds for next notify");
 	}
 
 	@Override
@@ -154,8 +154,8 @@ public class NYEListener extends AbstractAlarmListener {
 		}
 	}
 
-	protected void log(String message) {
-		System.out.println("NYE(" + getUTCOffset(tzEntries.get(0)) + "): " + message);
+	protected void log(DateTime alarmTime, String message) {
+		System.out.println("NYE(" + getUTCOffset(nyTimes.firstEntry().getValue().get(0)) + "): " + message);
 	}
 
 	public static String getUTCOffset(DateTimeZone tz) {
