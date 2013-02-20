@@ -108,7 +108,7 @@ public class NYEListener extends AbstractAlarmListener {
 
 	@Override
 	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
-		log("Waiting " + secondsToWait + " for next notify");
+		log("Waiting " + secondsToWait + " seconds for next notify");
 	}
 
 	@Override
