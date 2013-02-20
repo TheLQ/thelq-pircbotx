@@ -21,6 +21,7 @@ package org.thelq.pircbotx.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -29,6 +30,7 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.tz.NameProvider;
+import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
@@ -129,6 +131,27 @@ public class NYEListener extends AbstractAlarmListener {
 	public void onEnd(DateTime end) {
 		sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + tzLongList
 				+ "Drift: " + calcDrift(end));
+	}
+	
+	@Override
+	public void onMessage(MessageEvent event) throws Exception {
+		String[] commandParts = event.getMessage().split(" ", 3);
+		if (commandParts.length != 3 || !StringUtils.startsWithIgnoreCase(commandParts[0], "?newyears"))
+			return;
+		event.getBot().log("*** Got new years command");
+		DateTime now = DateTime.now();
+
+		if (commandParts[1].equals("next")) {
+			for (Map.Entry<DateTime, List<DateTimeZone>> curEntry : nyTimes.entrySet())
+				if (curEntry.getKey().isAfter(now)) {
+					event.respond("Next New Years is in " + remainFormatter.print(new Period(now, curEntry.getKey()))
+							+ " for " + getUTCOffset(curEntry.getValue().get(0))
+							+ " - " + tzLongList);
+					return;
+				}
+			//No entrires...
+			event.respond("No more New Years :-( | " + nyTimes.keySet().iterator().next());
+		}
 	}
 
 	protected void log(String message) {
