@@ -28,8 +28,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import org.joda.time.tz.NameProvider;
 
 /**
@@ -45,11 +43,6 @@ public class NYEListener extends AbstractAlarmListener {
 	protected static final int newYear;
 	protected static DateTimeFormatter tzOffsetFormatter = new DateTimeFormatterBuilder()
 			.appendTimeZoneOffset(null, true, 2, 4)
-			.toFormatter();
-	protected static PeriodFormatter driftFormatter = new PeriodFormatterBuilder()
-			.appendMinutes().appendSuffix("m")
-			.appendSeconds().appendSuffix("s")
-			.appendMillis().appendSuffix("ms")
 			.toFormatter();
 	protected boolean started = false;
 	protected List<String> tzLongNames = new ArrayList();
