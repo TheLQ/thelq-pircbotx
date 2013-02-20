@@ -83,6 +83,7 @@ public class CountdownCommand extends AbstractAlarmListener implements BasicComm
 		}
 
 		//Start the process
+		System.out.println("Adding to queue");
 		DateTime alarmTime = new DateTime().plus(parsePeriod);
 		openCountdowns.put(alarmTime, event);
 		alarmTimes.add(alarmTime);
@@ -90,13 +91,12 @@ public class CountdownCommand extends AbstractAlarmListener implements BasicComm
 
 	@Override
 	public void onStart(DateTime alarmDate, int secondsTillNotify) {
-		MessageEvent event = openCountdowns.get(alarmDate);
-		sendMessageNow(event.getBot(), event.getChannel(), event.getUser(), "Countdown starting...");
+		sendMessageNowAlarm(alarmDate, "Countdown starting...");
 	}
 
 	@Override
 	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
-		System.out.println("CD: Waiting " + secondsToWait + " seconds for notify for " + openCountdowns.get(alarmDate));
+		System.out.println("CD: Waiting " + secondsToWait + " seconds for notify for " + openCountdowns.get(alarmDate).getUser().getNick());
 	}
 
 	@Override
