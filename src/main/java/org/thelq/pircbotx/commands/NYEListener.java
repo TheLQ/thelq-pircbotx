@@ -78,6 +78,8 @@ public class NYEListener extends AbstractAlarmListener {
 	}
 
 	public NYEListener() {
+		//Add all precalculated NY times
+		alarmTimes.addAll(nyTimes.keySet());
 	}
 
 	@Override
