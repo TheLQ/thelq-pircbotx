@@ -78,7 +78,7 @@ public class NYEListener extends AbstractAlarmListener {
 	}
 
 	@Override
-	public void onStart(DateTime alarmDate, int secondsTillNotify) {
+	public void onStart(DateTime alarmDate, long secondsTillNotify) {
 		//Build timezone name lists
 		NameProvider nameProvider = DateTimeZone.getNameProvider();
 		long curTimestamp = System.currentTimeMillis();
@@ -102,12 +102,12 @@ public class NYEListener extends AbstractAlarmListener {
 	}
 
 	@Override
-	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
+	public void onNotifyBefore(DateTime alarmDate, long secondsToWait) {
 		log("Waiting " + secondsToWait + " seconds for next notify");
 	}
 
 	@Override
-	public void onNotify(DateTime alarmDate, int secondsRemain) {
+	public void onNotify(DateTime alarmDate, long secondsRemain) {
 		if (!started) {
 			sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + tzLongList);
 			started = true;

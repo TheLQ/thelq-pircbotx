@@ -90,17 +90,17 @@ public class CountdownCommand extends AbstractAlarmListener implements BasicComm
 	}
 
 	@Override
-	public void onStart(DateTime alarmDate, int secondsTillNotify) {
+	public void onStart(DateTime alarmDate, long secondsTillNotify) {
 		sendMessageNowAlarm(alarmDate, "Countdown starting...");
 	}
 
 	@Override
-	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
+	public void onNotifyBefore(DateTime alarmDate, long secondsToWait) {
 		System.out.println("CD: Waiting " + secondsToWait + " seconds for notify for " + openCountdowns.get(alarmDate).getUser().getNick());
 	}
 
 	@Override
-	public void onNotify(DateTime alarmDate, int secondsRemain) {
+	public void onNotify(DateTime alarmDate, long secondsRemain) {
 		sendMessageNowAlarm(alarmDate, remainFormatter.print(new Period(1000 * secondsRemain)) + " remaining");
 	}
 

@@ -28,8 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Getter;
 import lombok.Synchronized;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.Period;
-import org.joda.time.Seconds;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.pircbotx.Channel;
@@ -104,8 +104,8 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 
 	public void countdown(DateTime alarmDate) throws InterruptedException {
 		DateTime startDate = new DateTime();
-		Period period = new Period(startDate, alarmDate);
-		int periodSeconds = period.toStandardSeconds().getSeconds();
+		Duration duration = new Duration(startDate, alarmDate);
+		long durationSeconds = duration.getStandardSeconds();
 		//Register times we want to notify the user
 		List<DateTime> notifyTimes = new ArrayList();
 		registerNotifyTime(notifyTimes, startDate, alarmDate, 0);
@@ -113,25 +113,25 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 		registerNotifyTime(notifyTimes, startDate, alarmDate, 5);
 		registerNotifyTime(notifyTimes, startDate, alarmDate, 10);
 		registerNotifyTime(notifyTimes, startDate, alarmDate, 30);
-		for (int i = 1; i <= (periodSeconds % 60); i++)
+		for (int i = 1; i <= (durationSeconds % 60); i++)
 			registerNotifyTime(notifyTimes, startDate, alarmDate, i * 60);
 
 		//Reverse the list so they can be loaded in the correct order (easier to write in reverse above)
 		Collections.reverse(notifyTimes);
 
-		onStart(alarmDate, periodSeconds);
+		onStart(alarmDate, durationSeconds);
 
 		DateTime lastDateTime = startDate;
 		for (DateTime curDateTime : notifyTimes) {
 			long waitPeriodMilli = curDateTime.getMillis() - lastDateTime.getMillis();
 			onNotifyBefore(alarmDate, (int) waitPeriodMilli / 1000);
 			Thread.sleep(waitPeriodMilli);
-			Period remainingPeriod = new Period(curDateTime, alarmDate);
-			if (remainingPeriod.toStandardSeconds().getSeconds() == 0)
+			Duration remaainingDuration = new Duration(startDate, alarmDate);
+			if (remaainingDuration.getStandardSeconds() == 0)
 				//Done
 				break;
 			else
-				onNotify(alarmDate, remainingPeriod.toStandardSeconds().getSeconds());
+				onNotify(alarmDate, remaainingDuration.getStandardSeconds());
 			lastDateTime = curDateTime;
 		}
 
@@ -180,13 +180,13 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 				itr.remove();
 	}
 
-	public void onStart(DateTime alarmDate, int secondsTillNotify) {
+	public void onStart(DateTime alarmDate, long secondsTillNotify) {
 	}
 
-	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
+	public void onNotifyBefore(DateTime alarmDate, long secondsToWait) {
 	}
 
-	public void onNotify(DateTime alarmDate, int secondsRemain) {
+	public void onNotify(DateTime alarmDate, long secondsRemain) {
 	}
 
 	public void onEnd(DateTime alarmDate) {
