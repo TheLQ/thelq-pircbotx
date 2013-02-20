@@ -19,9 +19,11 @@
 package org.thelq.pircbotx.commands;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -29,7 +31,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.tz.NameProvider;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
@@ -47,9 +48,6 @@ public class NYEListener extends AbstractAlarmListener {
 			.appendTimeZoneOffset(null, true, 2, 4)
 			.toFormatter();
 	protected boolean started = false;
-	protected List<String> tzLongNames = new ArrayList();
-	protected List<String> tzShortNames = new ArrayList();
-	protected String tzLongList;
 
 	static {
 		//Figure out what's the "new year" by rounding
@@ -78,27 +76,7 @@ public class NYEListener extends AbstractAlarmListener {
 
 	@Override
 	public void onStart(DateTime alarmDate, long secondsTillNotify) {
-		//Build timezone name lists
-		NameProvider nameProvider = DateTimeZone.getNameProvider();
-		long curTimestamp = System.currentTimeMillis();
-		for (List<DateTimeZone> curTzList : nyTimes.values())
-			for (DateTimeZone curTz : curTzList)
-				if (!StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/")) {
-					tzLongNames.add(nameProvider.getName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
-					tzShortNames.add(nameProvider.getShortName(Locale.US, curTz.getID(), curTz.getNameKey(curTimestamp)));
-				}
-
-		//Prebuild long form of timezones
-		StringBuilder tzListBuilder = new StringBuilder();
-		for (int i = 0; i < tzShortNames.size(); i++)
-			tzListBuilder.append(tzShortNames.get(i)).append("(")
-					.append(tzLongNames.get(i)).append(")")
-					.append(", ");
-		tzListBuilder.substring(0, tzListBuilder.length() - 2);
-		tzLongList = tzListBuilder.toString();
-
-		log(alarmDate, "Initialized NYE countdown for " + StringUtils.join(tzShortNames, ", "));
-
+		log(alarmDate, "Initialized NYE countdown for " + getShortNames(nyTimes.get(alarmDate)));
 	}
 
 	@Override
@@ -109,14 +87,14 @@ public class NYEListener extends AbstractAlarmListener {
 	@Override
 	public void onNotify(DateTime alarmDate, long secondsRemain) {
 		if (!started) {
-			sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + tzLongList);
+			sendMessage("NEW YEARS EVE COUNTDOWN STARTING!!! " + getExtendedNames(nyTimes.get(alarmDate)));
 			started = true;
 		}
 
 		//Theme the countdown
 		if (secondsRemain > 9)
 			sendMessage(getRemainFormatter().print(new Period(1000 * secondsRemain))
-					+ " till NYE for " + StringUtils.join(tzShortNames, ", "));
+					+ " till NYE for " + getExtendedNames(nyTimes.get(alarmDate)));
 		else if (secondsRemain < 9 && secondsRemain > 3)
 			sendMessage(secondsRemain + " seconds");
 		else if (secondsRemain == 3)
@@ -129,10 +107,10 @@ public class NYEListener extends AbstractAlarmListener {
 
 	@Override
 	public void onEnd(DateTime end) {
-		sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + tzLongList
+		sendMessage("Happy New Year!!!! Welcome to " + newYear + " " + getExtendedNames(nyTimes.get(end))
 				+ "Drift: " + calcDrift(end));
 	}
-	
+
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
 		String[] commandParts = event.getMessage().split(" ", 3);
@@ -146,7 +124,7 @@ public class NYEListener extends AbstractAlarmListener {
 				if (curEntry.getKey().isAfter(now)) {
 					event.respond("Next New Years is in " + remainFormatter.print(new Period(now, curEntry.getKey()))
 							+ " for " + getUTCOffset(curEntry.getValue().get(0))
-							+ " - " + tzLongList);
+							+ " - " + getExtendedNames(curEntry.getValue()));
 					return;
 				}
 			//No entrires...
@@ -167,5 +145,31 @@ public class NYEListener extends AbstractAlarmListener {
 			millis = next;
 		}
 		return tzOffsetFormatter.withZone(tz).print(millis);
+	}
+
+	protected static String getExtendedNames(Collection<DateTimeZone> tzList) {
+		if (tzList.isEmpty())
+			return null;
+		//Prebuild long form of timezones
+		long nowTime = System.currentTimeMillis();
+		Set<String> tzExtendedSet = new HashSet();
+		for (DateTimeZone curTz : tzList) {
+			if (StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/"))
+				continue;
+			tzExtendedSet.add(curTz.getName(nowTime) + "(" + curTz.getShortName(nowTime) + ")");
+		}
+		return StringUtils.defaultIfBlank(StringUtils.join(tzExtendedSet, ", "), null);
+	}
+
+	protected static String getShortNames(Collection<DateTimeZone> tzList) {
+		//Prebuild long form of timezones
+		long nowTime = System.currentTimeMillis();
+		Set<String> tzShortSet = new HashSet();
+		for (DateTimeZone curTz : tzList) {
+			if (StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/"))
+				continue;
+			tzShortSet.add(curTz.getShortName(nowTime) + ", ");
+		}
+		return StringUtils.defaultIfBlank(StringUtils.join(tzShortSet, ", "), null);
 	}
 }
