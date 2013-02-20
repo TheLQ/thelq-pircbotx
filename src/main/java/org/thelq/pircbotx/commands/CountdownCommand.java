@@ -18,20 +18,14 @@
  */
 package org.thelq.pircbotx.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.Period;
-import org.joda.time.Seconds;
-import org.joda.time.format.PeriodFormat;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.thelq.pircbotx.BasicCommand;
 
@@ -39,19 +33,15 @@ import org.thelq.pircbotx.BasicCommand;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class CountdownCommand extends ListenerAdapter implements BasicCommand {
+public class CountdownCommand extends AbstractAlarmListener implements BasicCommand {
 	@Getter
 	protected String help = "Counts down to the specified time. Use: ?countdown <time> <sec/min>";
 	protected static PeriodFormatter driftFormatter;
 	protected static PeriodFormatter periodFormatterSec;
 	protected static PeriodFormatter periodFormatterMinSec;
+	protected Map<DateTime, MessageEvent> openCountdowns = new HashMap();
 
 	static {
-		driftFormatter = new PeriodFormatterBuilder()
-				.appendMinutes().appendSuffix("m")
-				.appendSeconds().appendSuffix("s")
-				.appendMillis().appendSuffix("ms")
-				.toFormatter();
 		periodFormatterSec = new PeriodFormatterBuilder()
 				.appendSeconds().appendSuffix("s")
 				.toFormatter();
@@ -65,6 +55,12 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 	public void onMessage(MessageEvent event) throws Exception {
 		if (!event.getMessage().startsWith("?countdown"))
 			return;
+		
+		for(MessageEvent curEvent : openCountdowns.values())
+			if(curEvent.getUser().equals(event.getUser())) {
+				event.respond("You already have a countdown open. Please wait for it to finish");
+				return;
+			}
 
 		//Split up the line
 		String[] messageParts = event.getMessage().split(" ", 2);
@@ -86,10 +82,35 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 			}
 		}
 
-		DateTime endDate = new DateTime().plus(parsePeriod);
-		DateTime realEndDate = CountdownUtils.countdown(event, endDate);
-		
-		Period drift = new Period(endDate, realEndDate);
-		CountdownUtils.respondNow(event, "Countdown finished (Drift: " + driftFormatter.print(drift) + ")");
+		//Start the process
+		DateTime alarmTime = new DateTime().plus(parsePeriod);
+		openCountdowns.put(alarmTime, event);
+		alarmTimes.add(alarmTime);
+	}
+
+	@Override
+	public void onStart(DateTime alarmDate, int secondsTillNotify) {
+		MessageEvent event = openCountdowns.get(alarmDate);
+		sendMessageNow(event.getBot(), event.getChannel(), event.getUser(), "Countdown starting...");
+	}
+
+	@Override
+	public void onNotifyBefore(DateTime alarmDate, int secondsToWait) {
+		System.out.println("CD: Waiting " + secondsToWait + " seconds for notify for " + openCountdowns.get(alarmDate));
+	}
+
+	@Override
+	public void onNotify(DateTime alarmDate, int secondsRemain) {
+		sendMessageNowAlarm(alarmDate, remainFormatter.print(new Period(1000 * secondsRemain)) + " remaining");
+	}
+
+	@Override
+	public void onEnd(DateTime alarmDate) {
+		sendMessageNowAlarm(alarmDate, "Done! Drift: " + calcDrift(alarmDate));
+	}
+	
+	protected void sendMessageNowAlarm(DateTime alarmDate, String message) {
+		MessageEvent event = openCountdowns.get(alarmDate);
+		sendMessageNow(event.getBot(), event.getChannel(), event.getUser(), message);
 	}
 }
