@@ -1,3 +1,4 @@
 syntax: glob
 target/*
 src/main/resources/nickserv.properties
+nb-configuration.xml
