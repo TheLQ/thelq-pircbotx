@@ -99,7 +99,7 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 	@Synchronized("notifyChannels")
 	protected void sendMessage(String message) {
 		for (Channel curChannel : notifyChannels)
-			curChannel.sendMessage(message);
+			curChannel.send().message(message);
 	}
 
 	public void countdown(DateTime alarmDate) throws InterruptedException {
@@ -146,7 +146,7 @@ public abstract class AbstractAlarmListener extends ListenerAdapter {
 	}
 
 	protected static void sendMessageNow(PircBotX bot, Channel chan, User user, String message) {
-		bot.sendRawLineNow("PRIVMSG " + chan.getName() + " :" + user.getNick() + ": " + message);
+		bot.sendRaw().rawLineNow("PRIVMSG " + chan.getName() + " :" + user.getNick() + ": " + message);
 	}
 
 	protected static String calcDrift(DateTime alarmTime) {
