@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -37,6 +38,7 @@ import org.pircbotx.hooks.events.MessageEvent;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 public class NYEListener extends AbstractAlarmListener {
 	/**
 	 * Times of all NYE events relative to UTC and their timezone(s). Sorted for 
@@ -116,7 +118,7 @@ public class NYEListener extends AbstractAlarmListener {
 		String[] commandParts = event.getMessage().split(" ", 3);
 		if (commandParts.length != 3 || !StringUtils.startsWithIgnoreCase(commandParts[0], "?newyears"))
 			return;
-		event.getBot().log("*** Got new years command");
+		log.debug("Got new years command");
 		DateTime now = DateTime.now();
 
 		if (commandParts[1].equals("next")) {
