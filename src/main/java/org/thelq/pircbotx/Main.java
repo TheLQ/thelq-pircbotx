@@ -19,6 +19,7 @@
 package org.thelq.pircbotx;
 
 import java.util.Properties;
+import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
@@ -35,33 +36,38 @@ import org.thelq.pircbotx.commands.UptimeCommand;
 public class Main {
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
-		MultiBotManager manager = new MultiBotManager("TheLQ-Pircbotx");
-		manager.setLogin("LQ");
-		manager.setVerbose(true);
-		manager.setAutoNickChange(true);
-		
+		MultiBotManager manager = new MultiBotManager();
+		Configuration.Builder templateConfig = new Configuration.Builder()
+				.setName("TheLQ-testing")
+				.setLogin("LQ")
+				.setAutoNickChange(true);
+
 		//Load nickserv data
 		Properties passwords = new Properties();
 		passwords.load(Main.class.getResourceAsStream("/nickserv.properties"));
-		
+
 		//Servers
-		manager.createBot("irc.freenode.org").addChannel("#pircbotx").getBot().identify(passwords.getProperty("freenode"));
-		manager.createBot("irc.swiftirc.net").addChannel("#pircbotx").getBot().identify(passwords.getProperty("swiftirc"));
-		
+		manager.addBot(new Configuration.Builder(templateConfig)
+				.setServerHostname("irc.freenode.org")
+				.addAutoJoinChannel("#pircbotx")
+				.setNickservPassword(passwords.getProperty("freenode"))
+				.buildConfiguration());
+		manager.addBot(new Configuration.Builder(templateConfig)
+				.setServerHostname("irc.swiftirc.net")
+				.addAutoJoinChannel("#pircbotx")
+				.setNickservPassword(passwords.getProperty("swiftirc"))
+				.buildConfiguration());
+
 		//Various Listeners and commands
-		manager.getListenerManager().addListener(new HelpCommand());
-		manager.getListenerManager().addListener(new IdentifiedCommand());
-		manager.getListenerManager().addListener(new UptimeCommand());
-		manager.getListenerManager().addListener(new LevelsListCommand());
-		manager.getListenerManager().addListener(new MyLevelsCommand());
-		manager.getListenerManager().addListener(new CountdownCommand());
-		manager.getListenerManager().addListener(new NYEListener());
-		
+		templateConfig.getListenerManager().addListener(new HelpCommand());
+		templateConfig.getListenerManager().addListener(new IdentifiedCommand());
+		templateConfig.getListenerManager().addListener(new UptimeCommand());
+		templateConfig.getListenerManager().addListener(new LevelsListCommand());
+		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
+		templateConfig.getListenerManager().addListener(new CountdownCommand());
+		templateConfig.getListenerManager().addListener(new NYEListener());
+
 		//Connect
-		try {
-			manager.connectAll();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		manager.start();
 	}
 }
