@@ -133,6 +133,12 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.1</version>
 		</dependency>
+		<!-- Logback for logging to console -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.12</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
