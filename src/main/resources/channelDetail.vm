@@ -22,14 +22,6 @@
 	<dt>Channel Key</dt><dd>$channel.channelKey</dd>
 </dl>
 
-#macro ( displayMode $enabled)
-	#if($enabled)
-		<td class="success">Yes</td>
-	#else
-		<td class="error">No</td>
-	#end
-#end
-
 <h4>Channel Users</h4>
 #if($channel.users.isEmpty())
 	There are no users
@@ -42,11 +34,11 @@
 	#foreach($user in $channel.users)
 		<tr>
 		<td><a href="userDetail.vm?userId=$user.userId">$user.nick</td>
-		#displayMode($channel.isOp($user))
-		#displayMode($channel.hasVoice($user))
-		#displayMode($channel.isHalfOp($user))
-		#displayMode($channel.isSuperOp($user))
-		#displayMode($channel.isOwner($user))
+		#createCell($channel.isOp($user))
+		#createCell($channel.hasVoice($user))
+		#createCell($channel.isHalfOp($user))
+		#createCell($channel.isSuperOp($user))
+		#createCell($channel.isOwner($user))
 		</tr>
 	#end
 	</tbody>
