@@ -83,6 +83,7 @@ public class BotServe extends Serve {
 		protected void fillContext(Context context, HttpServletRequest request) {
 			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
 			context.put("manager", Main.MANAGER);
+			context.put("StringUtils", StringUtils.class);
 			
 			//Handle bot parameter
 			String botIdRaw = request.getParameter("bot");
