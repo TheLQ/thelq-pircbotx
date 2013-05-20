@@ -44,6 +44,9 @@
 </div>
 
 
-
+<hr/>
+<center>Written by Leon Blakey/TheLQ/Lord.Quackstar
+ | Uses Java IRC Library <a href="http://code.google.com/p/pircbotx">PircBotX $field.in("org.pircbotx.PircBotX").VERSION</a>
+ | <a href="http://code.google.com/p/lq-projects">LQ-Projects Page</a> </center>
 </body>
 </html>
