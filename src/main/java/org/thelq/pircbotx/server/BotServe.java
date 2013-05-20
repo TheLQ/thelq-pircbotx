@@ -22,6 +22,7 @@ import Acme.Serve.Serve;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.tools.view.VelocityViewServlet;
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.thelq.pircbotx.Main;
 
 /**
@@ -78,9 +82,47 @@ public class BotServe extends Serve {
 		protected void fillContext(Context context, HttpServletRequest request) {
 			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
 			context.put("manager", Main.MANAGER);
+			
+			//Handle bot parameter
 			String botIdRaw = request.getParameter("bot");
 			if(StringUtils.isNotBlank(botIdRaw))
 				context.put("bot", Main.MANAGER.getBotById(Integer.parseInt(botIdRaw)));
+			
+			//Handle userId parameter
+			String userIdRaw = request.getParameter("userId");
+			if(StringUtils.isNotBlank(userIdRaw)) {
+				boolean ran = false;
+				Outer:
+				for(PircBotX curBot : Main.MANAGER.getBots())
+					for(User curUser : curBot.getUserChannelDao().getAllUsers()) {
+						if(curUser.getUserId().equals(UUID.fromString(userIdRaw))) {
+							context.put("user", curUser);
+							ran = true;
+							break Outer;
+						}
+					}
+ 				
+				if(!ran)
+					throw new RuntimeException("Invalid user UUID");
+			}
+			
+			//Handle channelId parameter
+			String channelIdRaw = request.getParameter("channelId");
+			if(StringUtils.isNotBlank(channelIdRaw)) {
+				boolean ran = false;
+				Outer:
+				for(PircBotX curBot : Main.MANAGER.getBots())
+					for(Channel channel : curBot.getUserChannelDao().getAllChannels()) {
+						if(channel.getChannelId().equals(UUID.fromString(channelIdRaw))) {
+							context.put("channel", channel);
+							ran = true;
+							break Outer;
+						}
+					}
+ 				
+				if(!ran)
+					throw new RuntimeException("Invalid channel UUID");
+			}
 		}
 	}
 }
