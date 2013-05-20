@@ -37,7 +37,8 @@ in the IRC channel will reflect immediately in this interface
 	</dl>
 #end
 
-<h2>Loaded Listeners:</h2> <ul>
+<h4>Loaded Listeners:</h4> <ul>
 #foreach($curListener in $firstBot.configuration.listenerManager.listeners)
 	<li>$curListener.class.</li>
 #end
+</ul>
