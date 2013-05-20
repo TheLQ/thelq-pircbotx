@@ -21,3 +21,34 @@
 	<dt>Channel Limit</dt><dd>$channel.channelLimit</dd>
 	<dt>Channel Key</dt><dd>$channel.channelKey</dd>
 </dl>
+
+#macro ( displayMode $enabled)
+	#if($enabled)
+		<td class="success">Yes</td>
+	#else
+		<td class="error">No</td>
+	#end
+#end
+
+<h4>Channel Users</h4>
+#if($channel.users.isEmpty())
+	There are no users
+#else
+	<table class="table table-striped">
+	<thead>
+	<tr>
+	<th>Nick</th><th>Op</th><th>Voice</th><th>HalfOp</th><th>SuperOp</th><th>Owner</th>
+	</thead><tbody>
+	#foreach($user in $channel.users)
+		<tr>
+		<td><a href="userDetail.vm?userId=$user.userId">$user.nick</td>
+		#displayMode($channel.isOp($user))
+		#displayMode($channel.hasVoice($user))
+		#displayMode($channel.isHalfOp($user))
+		#displayMode($channel.isSuperOp($user))
+		#displayMode($channel.isOwner($user))
+		</tr>
+	#end
+	</tbody>
+	</table>
+#end
