@@ -22,7 +22,7 @@
 	#if($channelList.isEmpty())
 		<p>$user.nick is not a $missingName user in any channel
 	#else
-		<p>Channels $user.nick is a $missingName user
+		<p>Channels $user.nick is a $missingName user in:
 		<table>
 			<tr><th>Channel</th></tr>
 			#foreach($channel in $channelList)
@@ -34,6 +34,12 @@
 #end
 
 <h2>$user.nick</h2>
+Login: $user.login
+<br>Hostmask: $user.nick
+<br>Away: $user.away
+<br>Real name: $user.realName
+<br>Connected Server: $user.server
+<br>Hops: $user.hops
 #displayChannel($user.channels "normal")
 #displayChannel($user.channelsOpIn "op")
 #displayChannel($user.channelsVoiceIn "voice")
