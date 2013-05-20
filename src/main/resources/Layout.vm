@@ -30,6 +30,14 @@
 </head>
 <body>
 
+#macro ( createCell $enabled)
+	#if($enabled)
+		<td class="success">Yes</td>
+	#else
+		<td class="error">No</td>
+	#end
+#end
+
 <center><h2>TheLQ-PircBotX's Web Interface - $!page_title</h2></center>
 <div class="container-fluid">
 	<div class="row-fluid">
