@@ -31,7 +31,15 @@
 			text-decoration: none !important;
 			color: black !important;
 		}
+
+		th[data-sort]{
+			cursor:pointer;
+		}
 	</style>
+
+	<!-- jQuery -->
+	<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+	<script src="//raw.github.com/joequery/Stupid-Table-Plugin/master/stupidtable.min.js"></script>
 </head>
 <body>
 
@@ -68,4 +76,10 @@
  | Uses Java IRC Library <a href="http://code.google.com/p/pircbotx">PircBotX $field.in("org.pircbotx.PircBotX").VERSION</a>
  | <a href="http://code.google.com/p/lq-projects">LQ-Projects Page</a> </center>
 </body>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.table').stupidtable();
+});
+</script>
 </html>
