@@ -26,6 +26,11 @@
 		.table tbody td.error{background-color:#f2dede !important;}
 		.table-hover tbody td.success:hover{background-color:#d0e9c6 !important;}
 		.table-hover tbody td.error:hover{background-color:#ebcccc !important;}
+
+		.title, .title a:link, .title a:hover, .title a:visited, .title a:focus, .title a:active {
+			text-decoration: none !important;
+			color: black !important;
+		}
 	</style>
 </head>
 <body>
@@ -38,7 +43,7 @@
 	#end
 #end
 
-<center><h2>TheLQ-PircBotX's Web Interface - $!page_title</h2></center>
+<center><h2><a href="index.vm" class="title">TheLQ-PircBotX's Web Interface - $!page_title</a></h2></center>
 <div class="container-fluid">
 	<div class="row-fluid">
 		<div class="span2">
