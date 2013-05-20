@@ -1,0 +1,23 @@
+#set( $page_title = "Channel Detail" )
+
+<h4>Channel Info</h4>
+<dl class="dl-horizontal">
+    <dt>Name</dt><dd>$channel.name</dd>
+	<dt>Mode</dt><dd>$channel.mode</dd>
+	<dt>Creation Timestamp</dt><dd>$channel.createTimestamp</dd>
+	<dt>Topic</dt><dd>$channel.topic</dd>
+	<dt>Topic Timestamp</dt><dd>$channel.topicTimestamp</dd>
+	<dt>Topic Setter</dt><dd>$channel.topicSetter</dd>
+</dl>
+	
+<h4>Modes</h4>
+<dl class="dl-horizontal">
+	<dt>Moderated</dt><dd>$channel.moderated</dd>
+	<dt>No External Messages</dt><dd>$channel.noExternalMessages</dd>
+	<dt>Invite Only</dt><dd>$channel.inviteOnly</dd>
+	<dt>Secret</dt><dd>$channel.secret</dd>
+	<dt>Channel Private</dt><dd>$channel.channelPrivate</dd>
+	<dt>Topic Protection</dt><dd>$channel.topicProtection</dd>
+	<dt>Channel Limit</dt><dd>$channel.channelLimit</dd>
+	<dt>Channel Key</dt><dd>$channel.channelKey</dd>
+</dl>
