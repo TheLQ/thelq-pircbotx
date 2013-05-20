@@ -26,7 +26,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.context.Context;
+import org.apache.velocity.runtime.resource.ResourceManagerImpl;
 import org.apache.velocity.tools.view.VelocityViewServlet;
+import org.pircbotx.MultiBotManager;
 
 /**
  *
@@ -35,19 +41,21 @@ import org.apache.velocity.tools.view.VelocityViewServlet;
 public class BotServe extends Serve {
 	protected final String rootPath;
 
-	public BotServe(int port) {
+	public BotServe(int port, MultiBotManager passedManager) {
 		super(ImmutableMap.builder()
 				.put(ARG_PORT, port)
 				.put(ARG_NOHUP, "nohup")
 				//.put(ARG_WORK_DIRECTORY, "c:\\users")
 				.build(), System.out);
 
-		File classesFolder = new File("target/classes");
+		File classesFolder = new File("src\\main\\resources");
 		if (classesFolder.exists())
 			rootPath = classesFolder.getAbsolutePath();
 		else
 			rootPath = new File(".").getAbsolutePath();
-		addServlet("/", new VelocityViewServlet());
+
+		VelocityViewServlet velocityServlet = new BotVelocityServlet(passedManager);
+		addServlet("/", velocityServlet);
 		addServlet("/myServe", new HttpServlet() {
 			@Override
 			protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,5 +67,21 @@ public class BotServe extends Serve {
 	@Override
 	public String getRealPath(String path) {
 		return rootPath + path;
+	}
+	
+	
+
+	@Slf4j
+	@RequiredArgsConstructor
+	protected static class BotVelocityServlet extends VelocityViewServlet {
+		protected final MultiBotManager manager;
+
+		@Override
+		protected void fillContext(Context context, HttpServletRequest request) {
+			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
+			context.put("manager", manager);
+			if(StringUtils.isNotBlank(request.getParameter("bot")))
+				context.put("bot", manager.getBots());
+		}
 	}
 }

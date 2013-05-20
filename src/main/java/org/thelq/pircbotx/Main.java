@@ -18,9 +18,14 @@
  */
 package org.thelq.pircbotx;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Resources;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Properties;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
+import org.pircbotx.PircBotX;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -42,13 +47,10 @@ public class Main {
 				.setName("TheLQ-testing")
 				.setLogin("LQ")
 				.setAutoNickChange(true);
-		
-		BotServe serve = new BotServe(8080);
-		serve.runInBackground();
 
 		//Load nickserv data
 		Properties passwords = new Properties();
-		passwords.load(Main.class.getResourceAsStream("/nickserv.properties"));
+		passwords.load(new FileInputStream(new File(Resources.getResource("nickserv.properties").toURI())));
 
 		//Servers
 		manager.addBot(new Configuration.Builder(templateConfig)
@@ -70,6 +72,9 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
 		templateConfig.getListenerManager().addListener(new CountdownCommand());
 		templateConfig.getListenerManager().addListener(new NYEListener());
+		
+		BotServe serve = new BotServe(8080, manager);
+		serve.runInBackground();
 
 		//Connect
 		manager.start();
