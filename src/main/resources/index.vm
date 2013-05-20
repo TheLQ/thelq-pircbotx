@@ -33,7 +33,7 @@
 	#foreach($curChannel in $curBot.userChannelDao.allChannels)
 		<tr><th>$curChannel.name</th></tr>
 		#foreach($curUser in $curChannel.users)
-			<tr><td><a href="userDetail?userId=$curUser.userId">$curUser.nick</a></td><td>$curUser.hostmask</td><td></tr>
+			<tr><td><a href="userDetail.vm?userId=$curUser.userId">$curUser.nick</a></td><td>$curUser.hostmask</td><td></tr>
 		#end
 	#end
 	</table>
