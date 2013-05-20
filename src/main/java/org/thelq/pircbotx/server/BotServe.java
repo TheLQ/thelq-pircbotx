@@ -30,9 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.context.Context;
-import org.apache.velocity.runtime.resource.ResourceManagerImpl;
 import org.apache.velocity.tools.view.VelocityViewServlet;
-import org.pircbotx.MultiBotManager;
 import org.thelq.pircbotx.Main;
 
 /**
@@ -80,8 +78,9 @@ public class BotServe extends Serve {
 		protected void fillContext(Context context, HttpServletRequest request) {
 			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
 			context.put("manager", Main.MANAGER);
-			if(StringUtils.isNotBlank(request.getParameter("bot")))
-				context.put("bot", Main.MANAGER.getBots());
+			String botIdRaw = request.getParameter("bot");
+			if(StringUtils.isNotBlank(botIdRaw))
+				context.put("bot", Main.MANAGER.getBotById(Integer.parseInt(botIdRaw)));
 		}
 	}
 }

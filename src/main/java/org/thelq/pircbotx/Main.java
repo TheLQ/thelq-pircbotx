@@ -42,7 +42,7 @@ import org.thelq.pircbotx.server.BotServe;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Main {
-	public static final MultiBotManager MANAGER = new StatsMultiBotManager();;
+	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();;
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()
