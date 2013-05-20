@@ -32,7 +32,7 @@
 				$curBot.configuration.serverHostname
 				<ul>
 				#foreach($curChannel in $curBot.userChannelDao.allChannels)
-					<li><a href="viewChannel?channelId=$curChannel.channelId">$curChannel.name</a></li>
+					<li><a href="channelDetail.vm?channelId=$curChannel.channelId">$curChannel.name</a></li>
 				#end
 				</ul>
 			#end
