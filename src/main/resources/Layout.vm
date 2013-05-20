@@ -16,15 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  *#
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>$!page_title</title>
+	<title>$!page_title</title>
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 </head>
 <body>
 
-<h2>TheLQ-PircBotX's Web Interface - $!page_title</h2>
+<center><h2>TheLQ-PircBotX's Web Interface - $!page_title</h2></center>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			#foreach($curBot in $manager.bots)
+				$curBot.configuration.serverHostname
+				<ul>
+				#foreach($curChannel in $curBot.userChannelDao.allChannels)
+					<li><a href="viewChannel?channelId=$curChannel.channelId">$curChannel.name</a></li>
+				#end
+				</ul>
+			#end
+		</div>
+		<div class="span10">
+			$screen_content
+		</div>
+	</div>
+</div>
 
-$screen_content
+
 
 </body>
 </html>
