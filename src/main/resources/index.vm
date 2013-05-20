@@ -26,18 +26,15 @@ in the IRC channel will reflect immediately in this interface
 
 #set( $page_title = "Home" )
 #foreach($curBot in $manager.getBots()) 
-	<h2>#$curBot.botId $curBot.configuration.serverHostname - $curBot.nick</h2>
-	Uptime: $manager.getStats($curBot.botId).uptime
-	<br>Number of received messages: $manager.getStats( $curBot.botId ).receivedMessages
-	<br>Number of received commands: $manager.getStats($curBot.botId).receivedCommands.get()
-	<table>
-	#foreach($curChannel in $curBot.userChannelDao.allChannels)
-		<tr><th>$curChannel.name</th></tr>
-		#foreach($curUser in $curChannel.users)
-			<tr><td><a href="userDetail.vm?userId=$curUser.userId">$curUser.nick</a></td><td>$curUser.hostmask</td><td></tr>
-		#end
-	#end
-	</table>
+	<h4>Bot #$curBot.botId</h4>
+	<dl class="dl-horizontal">
+	<dt>Server</dt><dd>$curBot.configuration.serverHostname<dd>
+	<dt>Port</dt><dd>$curBot.configuration.serverPort</dd>
+	<dt>Nick</dt><dd>$curBot.nick</dd>
+	<dt>Uptime</dt><dd>$manager.getStats($curBot.botId).uptime</dd>
+	<dt>Total messages</dt><dd>$manager.getStats( $curBot.botId ).receivedMessages</dd>
+	<dt>Total commands</dt><dd>$manager.getStats($curBot.botId).receivedCommands.get()</dd>
+	</dl>
 #end
 
 <h2>Loaded Listeners:</h2> <ul>
