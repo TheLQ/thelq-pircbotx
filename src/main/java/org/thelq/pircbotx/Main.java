@@ -28,6 +28,7 @@ import org.thelq.pircbotx.commands.LevelsListCommand;
 import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.NYEListener;
 import org.thelq.pircbotx.commands.UptimeCommand;
+import org.thelq.pircbotx.server.BotServe;
 
 /**
  * Main class
@@ -41,6 +42,9 @@ public class Main {
 				.setName("TheLQ-testing")
 				.setLogin("LQ")
 				.setAutoNickChange(true);
+		
+		BotServe serve = new BotServe(8080);
+		serve.runInBackground();
 
 		//Load nickserv data
 		Properties passwords = new Properties();

@@ -20,36 +20,44 @@ package org.thelq.pircbotx.server;
 
 import Acme.Serve.Serve;
 import com.google.common.collect.ImmutableMap;
+import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.velocity.tools.view.VelocityViewServlet;
 
 /**
  *
  * @author Leon
  */
-@Slf4j
 public class BotServe extends Serve {
+	protected final String rootPath;
+
 	public BotServe(int port) {
 		super(ImmutableMap.builder()
 				.put(ARG_PORT, port)
 				.put(ARG_NOHUP, "nohup")
-				.put(ARG_WORK_DIRECTORY, "c:\\users")
+				//.put(ARG_WORK_DIRECTORY, "c:\\users")
 				.build(), System.out);
 
-		
+		File classesFolder = new File("target/classes");
+		if (classesFolder.exists())
+			rootPath = classesFolder.getAbsolutePath();
+		else
+			rootPath = new File(".").getAbsolutePath();
 		addServlet("/", new VelocityViewServlet());
 		addServlet("/myServe", new HttpServlet() {
 			@Override
 			protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				response.getWriter().write("Hello world!");
+				response.getWriter().write(getServletContext().getClass().toString());
 			}
 		});
+	}
+
+	@Override
+	public String getRealPath(String path) {
+		return rootPath + path;
 	}
 }
