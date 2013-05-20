@@ -38,6 +38,7 @@ public class UptimeCommand extends ListenerAdapter implements BasicCommand {
 			return;
 		
 		//Done, inform the user
+		ListenerUtils.incrimentCommands(event);
 		event.respond("This bot has been up for " + Main.MANAGER.getStats(event.getBot().getBotId()).getUptime());
 	}
 }

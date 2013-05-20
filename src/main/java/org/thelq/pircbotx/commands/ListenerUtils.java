@@ -16,26 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package org.thelq.pircbotx.commands;
 
-import lombok.Getter;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.thelq.pircbotx.BasicCommand;
+import org.pircbotx.hooks.Event;
+import org.thelq.pircbotx.Main;
+import org.thelq.pircbotx.Stats;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon
  */
-public class IdentifiedCommand extends ListenerAdapter implements BasicCommand {
-	@Getter
-	protected String help = "Are you identified with NickServ?";
+public final class ListenerUtils {
 
-	@Override
-	public void onMessage(MessageEvent event) throws Exception {
-		if (event.getMessage().startsWith("?identified")) {
-			ListenerUtils.incrimentCommands(event);
-			event.respond(event.getUser().isVerified() ? "You are identified" : "You are not identified");
-		}
+	private ListenerUtils() {
+		//Do not create
+	}
+	
+	public static Stats getStats(Event event) {
+		return Main.MANAGER.getStats(event.getBot().getBotId());
+	}
+	
+	public static void incrimentCommands(Event event) {
+		getStats(event).getReceivedCommands().incrementAndGet();
 	}
 }

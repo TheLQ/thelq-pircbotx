@@ -56,6 +56,7 @@ public class CountdownCommand extends AbstractAlarmListener implements BasicComm
 		if (!event.getMessage().startsWith("?countdown"))
 			return;
 		
+		ListenerUtils.incrimentCommands(event);
 		for(MessageEvent curEvent : openCountdowns.values())
 			if(curEvent.getUser().equals(event.getUser())) {
 				event.respond("You already have a countdown open. Please wait for it to finish");

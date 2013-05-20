@@ -34,6 +34,7 @@ import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
 import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.NYEListener;
+import org.thelq.pircbotx.commands.StatsListener;
 import org.thelq.pircbotx.commands.UptimeCommand;
 import org.thelq.pircbotx.server.BotServe;
 
@@ -74,6 +75,7 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
 		templateConfig.getListenerManager().addListener(new CountdownCommand());
 		templateConfig.getListenerManager().addListener(new NYEListener());
+		templateConfig.getListenerManager().addListener(new StatsListener());
 
 		BotServe serve = new BotServe(8080);
 		serve.runInBackground();

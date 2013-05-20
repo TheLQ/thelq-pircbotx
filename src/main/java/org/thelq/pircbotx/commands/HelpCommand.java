@@ -42,6 +42,7 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 		if (!message.startsWith("?help"))
 			return;
 
+		ListenerUtils.incrimentCommands(event);
 		String[] messageParts = message.split(" ");
 		if (messageParts.length > 2)
 			event.respond("Too many arguments");

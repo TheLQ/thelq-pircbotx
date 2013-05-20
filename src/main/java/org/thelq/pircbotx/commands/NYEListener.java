@@ -122,6 +122,7 @@ public class NYEListener extends AbstractAlarmListener {
 		DateTime now = DateTime.now();
 
 		if (commandParts[1].equals("next")) {
+			ListenerUtils.incrimentCommands(event);
 			for (Map.Entry<DateTime, List<DateTimeZone>> curEntry : nyTimes.entrySet())
 				if (curEntry.getKey().isAfter(now)) {
 					event.respond("Next New Years is in " + remainFormatter.print(new Period(now, curEntry.getKey()))

@@ -39,6 +39,7 @@ public class MyLevelsCommand extends ListenerAdapter implements BasicCommand {
 		if (!event.getMessage().startsWith("?mylevels"))
 			return;
 
+		ListenerUtils.incrimentCommands(event);
 		//Which user are we getting info for
 		String[] messageParts = event.getMessage().split(" ");
 		boolean isBot = messageParts.length == 2 && messageParts[1].equalsIgnoreCase("bot");
