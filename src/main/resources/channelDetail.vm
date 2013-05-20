@@ -22,9 +22,9 @@
 <dl class="dl-horizontal">
     <dt>Name</dt><dd>$StringUtils.defaultIfBlank($channel.name, "&nbsp;")</dd>
 	<dt>Mode</dt><dd>$StringUtils.defaultIfBlank($channel.mode, "&nbsp;")</dd>
-	<dt>Creation Timestamp</dt><dd>$channel.createTimestamp</dd>
+	<dt>Creation Timestamp</dt><dd>$date.format('long',$channel.createTimestamp)</dd>
 	<dt>Topic</dt><dd>$display.alt($StringUtils.defaultIfBlank, "&nbsp;")</dd>
-	<dt>Topic Timestamp</dt><dd>$channel.topicTimestamp</dd>
+	<dt>Topic Timestamp</dt><dd>$date.format('long',$channel.topicTimestamp)</dd>
 	<dt>Topic Setter</dt><dd>$StringUtils.defaultIfBlank($channel.topicSetter, "&nbsp;")</dd>
 </dl>
 	
@@ -46,8 +46,14 @@
 #else
 	<table class="table table-striped">
 	<thead>
-	<tr>
-	<th>Nick</th><th>Op</th><th>Voice</th><th>HalfOp</th><th>SuperOp</th><th>Owner</th>
+		<tr>
+		<th data-sort="string">Nick</th>
+		<th data-sort="string">Op</th>
+		<th data-sort="string">Voice</th>
+		<th data-sort="string">HalfOp</th>
+		<th data-sort="string">SuperOp</th>
+		<th data-sort="string">Owner</th>
+		</tr>
 	</thead><tbody>
 	#foreach($user in $channel.users)
 		<tr>

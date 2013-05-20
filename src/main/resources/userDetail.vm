@@ -35,9 +35,15 @@
 #else
 	<table class="table table-striped">
 	<thead>
-	<tr>
-	<th>Channel</th><th>Op</th><th>Voice</th><th>HalfOp</th><th>SuperOp</th><th>Owner</th>
-	</thead><tbody>
+		<tr>
+		<th data-sort="string">Channel</th>
+		<th data-sort="string">Op</th>
+		<th data-sort="string">Voice</th><th>HalfOp</th>
+		<th data-sort="string">SuperOp</th>
+		<th data-sort="string">Owner</th>
+		</tr>
+	</thead>
+	<tbody>
 	#foreach($channel in $user.channels)
 		<tr>
 		<td><a href="channelDetail.vm?channelId=$channel.channelId">$channel.name</td>
