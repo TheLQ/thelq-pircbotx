@@ -18,21 +18,6 @@
  *#
 #set( $page_title = "User Detail" )
 
-#macro( displayChannel $channelList $missingName)
-	#if($channelList.isEmpty())
-		<p>$user.nick is not a $missingName user in any channel
-	#else
-		<p>Channels $user.nick is a $missingName user in:
-		<table>
-			<tr><th>Channel</th></tr>
-			#foreach($channel in $channelList)
-				<tr><td>$channel.name</td></tr> 
-			#end
-		</table>
-	#end
-	
-#end
-
 <h2>$user.nick</h2>
 Login: $user.login
 <br>Hostmask: $user.nick
@@ -40,9 +25,26 @@ Login: $user.login
 <br>Real name: $user.realName
 <br>Connected Server: $user.server
 <br>Hops: $user.hops
-#displayChannel($user.channels "normal")
-#displayChannel($user.channelsOpIn "op")
-#displayChannel($user.channelsVoiceIn "voice")
-#displayChannel($user.channelsOwnerIn "owner")
-#displayChannel($user.channelsHalfOpIn "half op")
-#displayChannel($user.channelsSuperOpIn "super op")
+
+<h4>User's Channels</h4>
+#if($user.channels.isEmpty())
+	There are no channels
+#else
+	<table class="table table-striped">
+	<thead>
+	<tr>
+	<th>Channel</th><th>Op</th><th>Voice</th><th>HalfOp</th><th>SuperOp</th><th>Owner</th>
+	</thead><tbody>
+	#foreach($channel in $user.channels)
+		<tr>
+		<td><a href="userDetail.vm?userId=$user.userId">$channel.name</td>
+		#createCell($channel.isOp($user))
+		#createCell($channel.hasVoice($user))
+		#createCell($channel.isHalfOp($user))
+		#createCell($channel.isSuperOp($user))
+		#createCell($channel.isOwner($user))
+		</tr>
+	#end
+	</tbody>
+	</table>
+#end
