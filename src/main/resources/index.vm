@@ -16,14 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  *#
-<html>
-<head>
-<title>velocity test</title>
-</head>
-<body>
-
-<h2>TheLQ-PircBotX's Web Interface</h2>
-
+#set( $page_title = "Home" )
 #foreach($curBot in $manager.getBots()) 
 	<h2>#$curBot.botId $curBot.configuration.serverHostname - $curBot.nick</h2>
 	Uptime: $manager.getStats($curBot.botId).uptime
@@ -43,6 +36,3 @@
 #foreach($curListener in $manager.bots.iterator().next().configuration.listenerManager.listeners)
 	<li>$curListener.class.</li>
 #end
-</ul>
-</body>
-</html> 

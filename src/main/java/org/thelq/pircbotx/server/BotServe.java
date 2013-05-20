@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.tools.view.VelocityLayoutServlet;
 import org.apache.velocity.tools.view.VelocityViewServlet;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -76,7 +77,7 @@ public class BotServe extends Serve {
 
 	@Slf4j
 	@RequiredArgsConstructor
-	protected static class BotVelocityServlet extends VelocityViewServlet {
+	protected static class BotVelocityServlet extends VelocityLayoutServlet {
 
 		@Override
 		protected void fillContext(Context context, HttpServletRequest request) {
