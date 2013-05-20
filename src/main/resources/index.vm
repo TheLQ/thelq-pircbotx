@@ -1,0 +1,48 @@
+#*
+ * Copyright (C) 2011 Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * This file is part of TheLQ-PircBotX.
+ *
+ * TheLQ-PircBotX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheLQ-PircBotX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ *#
+<html>
+<head>
+<title>velocity test</title>
+</head>
+<body>
+
+<h2>TheLQ-PircBotX's Web Interface</h2>
+
+#foreach($curBot in $manager.getBots()) 
+	<h2>#$curBot.botId $curBot.configuration.serverHostname - $curBot.nick</h2>
+	Uptime: $manager.getStats($curBot.botId).uptime
+	<br>Number of received messages: $manager.getStats( $curBot.botId ).receivedMessages
+	<br>Number of received commands: $manager.getStats($curBot.botId).receivedCommands.get()
+	<table>
+	#foreach($curChannel in $curBot.userChannelDao.allChannels)
+		<tr><th>$curChannel.name</th></tr>
+		#foreach($curUser in $curChannel.users)
+			<tr><td><a href="userDetail?userId=$curUser.userId">$curUser.nick</a></td><td>$curUser.hostmask</td><td></tr>
+		#end
+	#end
+	</table>
+#end
+
+<h2>Loaded Listeners:</h2> <ul>
+#foreach($curListener in $manager.bots.iterator().next().configuration.listenerManager.listeners)
+	<li>$curListener.class.</li>
+#end
+</ul>
+</body>
+</html> 
