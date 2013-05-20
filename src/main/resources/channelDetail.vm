@@ -20,12 +20,12 @@
 
 <h4>Channel Info</h4>
 <dl class="dl-horizontal">
-    <dt>Name</dt><dd>$channel.name</dd>
-	<dt>Mode</dt><dd>$channel.mode</dd>
+    <dt>Name</dt><dd>$StringUtils.defaultIfBlank($channel.name, "&nbsp;")</dd>
+	<dt>Mode</dt><dd>$StringUtils.defaultIfBlank($channel.mode, "&nbsp;")</dd>
 	<dt>Creation Timestamp</dt><dd>$channel.createTimestamp</dd>
-	<dt>Topic</dt><dd>$channel.topic</dd>
+	<dt>Topicdd</dt><dd>$display.alt($StringUtils.defaultIfBlank, "&nbsp;")</dd>
 	<dt>Topic Timestamp</dt><dd>$channel.topicTimestamp</dd>
-	<dt>Topic Setter</dt><dd>$channel.topicSetter</dd>
+	<dt>Topic Setter</dt><dd>$StringUtils.defaultIfBlank($channel.topicSetter, "&nbsp;")</dd>
 </dl>
 	
 <h4>Modes</h4>
@@ -35,9 +35,9 @@
 	<dt>Invite Only</dt><dd>$channel.inviteOnly</dd>
 	<dt>Secret</dt><dd>$channel.secret</dd>
 	<dt>Channel Private</dt><dd>$channel.channelPrivate</dd>
-	<dt>Topic Protection</dt><dd>$channel.topicProtection</dd>
+	<dt>Topic Protection</dt><dd>$channel.hasTopicProtection()</dd>
 	<dt>Channel Limit</dt><dd>$channel.channelLimit</dd>
-	<dt>Channel Key</dt><dd>$channel.channelKey</dd>
+	<dt>Channel Key</dt><dd>$StringUtils.defaultIfBlank($channel.channelKey, "&nbsp;")</dd>
 </dl>
 
 <h4>Channel Users</h4>
