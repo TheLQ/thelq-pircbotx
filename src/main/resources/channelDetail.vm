@@ -23,7 +23,7 @@
     <dt>Name</dt><dd>$StringUtils.defaultIfBlank($channel.name, "&nbsp;")</dd>
 	<dt>Mode</dt><dd>$StringUtils.defaultIfBlank($channel.mode, "&nbsp;")</dd>
 	<dt>Creation Timestamp</dt><dd>$channel.createTimestamp</dd>
-	<dt>Topicdd</dt><dd>$display.alt($StringUtils.defaultIfBlank, "&nbsp;")</dd>
+	<dt>Topic</dt><dd>$display.alt($StringUtils.defaultIfBlank, "&nbsp;")</dd>
 	<dt>Topic Timestamp</dt><dd>$channel.topicTimestamp</dd>
 	<dt>Topic Setter</dt><dd>$StringUtils.defaultIfBlank($channel.topicSetter, "&nbsp;")</dd>
 </dl>
