@@ -33,6 +33,7 @@ import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.resource.ResourceManagerImpl;
 import org.apache.velocity.tools.view.VelocityViewServlet;
 import org.pircbotx.MultiBotManager;
+import org.thelq.pircbotx.Main;
 
 /**
  *
@@ -41,7 +42,7 @@ import org.pircbotx.MultiBotManager;
 public class BotServe extends Serve {
 	protected final String rootPath;
 
-	public BotServe(int port, MultiBotManager passedManager) {
+	public BotServe(int port) {
 		super(ImmutableMap.builder()
 				.put(ARG_PORT, port)
 				.put(ARG_NOHUP, "nohup")
@@ -54,7 +55,7 @@ public class BotServe extends Serve {
 		else
 			rootPath = new File(".").getAbsolutePath();
 
-		VelocityViewServlet velocityServlet = new BotVelocityServlet(passedManager);
+		VelocityViewServlet velocityServlet = new BotVelocityServlet();
 		addServlet("/", velocityServlet);
 		addServlet("/myServe", new HttpServlet() {
 			@Override
@@ -74,14 +75,13 @@ public class BotServe extends Serve {
 	@Slf4j
 	@RequiredArgsConstructor
 	protected static class BotVelocityServlet extends VelocityViewServlet {
-		protected final MultiBotManager manager;
 
 		@Override
 		protected void fillContext(Context context, HttpServletRequest request) {
 			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
-			context.put("manager", manager);
+			context.put("manager", Main.MANAGER);
 			if(StringUtils.isNotBlank(request.getParameter("bot")))
-				context.put("bot", manager.getBots());
+				context.put("bot", Main.MANAGER.getBots());
 		}
 	}
 }

@@ -23,6 +23,8 @@ import com.google.common.io.Resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
@@ -40,9 +42,9 @@ import org.thelq.pircbotx.server.BotServe;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Main {
+	public static final MultiBotManager MANAGER = new StatsMultiBotManager();;
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
-		MultiBotManager manager = new MultiBotManager();
 		Configuration.Builder templateConfig = new Configuration.Builder()
 				.setName("TheLQ-testing")
 				.setLogin("LQ")
@@ -53,12 +55,12 @@ public class Main {
 		passwords.load(new FileInputStream(new File(Resources.getResource("nickserv.properties").toURI())));
 
 		//Servers
-		manager.addBot(new Configuration.Builder(templateConfig)
+		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.freenode.org")
 				.addAutoJoinChannel("#pircbotx")
 				.setNickservPassword(passwords.getProperty("freenode"))
 				.buildConfiguration());
-		manager.addBot(new Configuration.Builder(templateConfig)
+		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.swiftirc.net")
 				.addAutoJoinChannel("#pircbotx")
 				.setNickservPassword(passwords.getProperty("swiftirc"))
@@ -72,11 +74,11 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
 		templateConfig.getListenerManager().addListener(new CountdownCommand());
 		templateConfig.getListenerManager().addListener(new NYEListener());
-		
-		BotServe serve = new BotServe(8080, manager);
+
+		BotServe serve = new BotServe(8080);
 		serve.runInBackground();
 
 		//Connect
-		manager.start();
+		MANAGER.start();
 	}
 }
