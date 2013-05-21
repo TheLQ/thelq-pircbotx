@@ -73,10 +73,11 @@ public class BotServe extends Serve {
 
 	@Override
 	public String getRealPath(String path) {
+		if(path.equals("/"))
+			//Use homepage
+			path = "/index.vm";
 		return rootPath + path;
 	}
-	
-	
 
 	@Slf4j
 	@RequiredArgsConstructor
