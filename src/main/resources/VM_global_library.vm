@@ -27,3 +27,29 @@
 		<td class="error">No</td>
 	#end
 #end
+
+#macro ( createHistoryData $curEvent )
+	#if($curEvent.class.simpleName == "TopicEvent")
+		<td>*</td><td>Topic changed to $curEvent.topic by #printUser($curEvent.user)</td>
+	#elseif($curEvent.class.simpleName == "NickChangeEvent")
+		<td>*</td><td>User $event.oldNick!$user.login@$user.hostmask changed nick to $event.newNick</td>
+	#elseif($curEvent.class.simpleName == "ModeEvent")
+		#if($curEvent.user)
+			<td>*</td><td>#printUser($curEvent.user) set mode $curEvent.mode</td>
+		#end
+	#elseif($curEvent.class.simpleName == "KickEvent")
+		<td>*</td><td>#printUser($curEvent.source) kicked #printUser($curEvent.recipient): $curEvent.reason</td>
+	#elseif($curEvent.class.simpleName == "JoinEvent")
+		<td>*</td><td>#printUser($curEvent.user) joined</td>
+	#elseif($curEvent.class.simpleName == "PartEvent")
+		<td>*</td><td>#printUser($curEvent.user) left</td>
+	#elseif($curEvent.class.simpleName == "NoticeEvent")
+		<td><b>$curEvent.user.nick</b></td><td><b>$curEvent.notice</b></td>
+	#elseif($curEvent.class.simpleName == "ActionEvent")
+		<td><i>$curEvent.user.nick</i></td><td><i>$curEvent.action</i></td>
+	#elseif($curEvent.class.simpleName == "MessageEvent")
+		<td>$curEvent.user.nick</td><td>$curEvent.message</td>
+	#else
+		<td>Unknown channel event</td><td>$curEvent</td>
+	#end
+#end
