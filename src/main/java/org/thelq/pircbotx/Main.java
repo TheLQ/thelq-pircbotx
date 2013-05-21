@@ -77,7 +77,7 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new NYEListener());
 		templateConfig.getListenerManager().addListener(new StatsListener());
 
-		BotServe serve = new BotServe(8080);
+		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
 		serve.runInBackground();
 
 		//Connect
