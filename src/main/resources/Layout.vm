@@ -43,14 +43,6 @@
 </head>
 <body>
 
-#macro ( createCell $enabled)
-	#if($enabled)
-		<td class="success">Yes</td>
-	#else
-		<td class="error">No</td>
-	#end
-#end
-
 <center><h2><a href="index.vm" class="title">TheLQ-PircBotX's Web Interface</a></h2></center>
 <div class="container-fluid">
 	<div class="row-fluid">
