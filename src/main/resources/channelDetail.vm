@@ -17,7 +17,7 @@
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  *#
 #set( $page_title = "Channel Detail" )
-#set( $serverHostname = $channel.bot.configuration.serverHostname )
+#set( $page_bot = $channel.bot )
 
 <h4>Channel Info</h4>
 <dl class="dl-horizontal">

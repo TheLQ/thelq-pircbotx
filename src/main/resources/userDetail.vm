@@ -17,7 +17,7 @@
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  *#
 #set( $page_title = "User Detail" )
-#set( $serverHostname = $user.bot.configuration.serverHostname )
+#set( $page_bot = $user.bot )
 
 <h4>User Information</h4>
 <dl class="dl-horizontal">

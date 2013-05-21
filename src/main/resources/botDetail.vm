@@ -1,0 +1,75 @@
+#*
+ * Copyright (C) 2011 Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * This file is part of TheLQ-PircBotX.
+ *
+ * TheLQ-PircBotX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * TheLQ-PircBotX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ *#
+#set( $page_title = "Bot Detail" )
+#set( $page_bot = $bot )
+#set( $stats = $manager.getStats($bot.botId) )
+
+<h4>Bot Information</h4>
+<dl class="dl-horizontal">
+	<dt>Nick</dt><dd>$bot.nick</dd>
+	<dt>Hostmask</dt><dd>$bot.userBot.hostmask</dd>
+	<dt>Uptime</dt><dd>$stats.uptime</dd>
+	<dt>Total messages</dt><dd>$stats.receivedMessages</dd>
+	<dt>Total commands</dt><dd>$stats.receivedCommands</dd></dd>
+</dl>
+
+#set( $config = $bot.configuration )
+<h4>Configuration Summary</h4>
+<dl class="dl-horizontal">
+	<dt>Name</dt><dd>$config.name</dd>
+	<dt>Login</dt><dd>$config.login</dd>
+	<dt>Version</dt><dd>$config.version</dd>
+	<dt>Finger</dt><dd>$config.finger</dd>
+	<dt>Server Hostname</dt><dd>$config.serverHostname</dd>
+	<dt>Server Port</dt><dd>$config.serverPort</dd>
+	<dt>Socket Factory</dt><dd>$config.socketFactory.class</dd>
+	<dt>Encoding</dt><dd>$config.encoding</dd>
+	<dt>Locale</dt><dd>$config.locale</dd>
+	<dt>Socket Timeout</dt><dd>$config.socketTimeout</dd>
+	<dt>Message Delay</dt><dd>$config.messageDelay</dd>
+	<dt>Auto Nick Change</dt><dd>$config.autoNickChange</dd>
+	<dt>ListenerManager</dt><dd>$config.listenerManager.class</dd>
+	<dt>BotFactory</dt><dd>$config.botFactory.class</dd>
+</dl>
+
+<h4>Recent History</h4>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th>Time</th>
+<th>Channel</th>
+<th>User</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+#foreach($curEvent in $stats.history)
+	##Skip mode notifications
+	#if($curEvent.class.simpleName != "ModeEvent" || $curEvent.user)
+		<tr>
+		<td style="white-space:nowrap;">$date.format('yyyy-M-d H:m:s',$curEvent.timestamp)</td>
+		<td>$display.alt($curEvent.channel.name, "*")</td>
+		#createHistoryData($curEvent)
+		</tr>
+	#else
+		##<td>Unknown event</td><td>$curEvent</td>
+	#end
+#end
+</tbody>
+</table>

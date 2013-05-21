@@ -58,9 +58,12 @@
 		</div>
 		<div class="span10">
 			<ul class="breadcrumb">
-				#if($serverHostname)
+				#if($page_bot && $bot)
 					<li><a href="index">Home</a></li> <span class="divider">/</span></li>
-					<li>$serverHostname <span class="divider">/</span></li>
+					<li class="active">$page_bot.configuration.serverHostname</li>
+				#elseif($page_bot)
+					<li><a href="index">Home</a></li> <span class="divider">/</span></li>
+					<li><a href="botDetail?botId=$page_bot.botId">$page_bot.configuration.serverHostname</a> <span class="divider">/</span></li>
 					<li class="active">$page_title</li>
 				#else
 					<li class="active">Home</li>
