@@ -47,7 +47,7 @@
 	<tbody>
 	#foreach($channel in $user.channels)
 		<tr>
-		<td><a href="channelDetail.vm?channelId=$channel.channelId">$channel.name</td>
+		<td><a href="channelDetail?channelId=$channel.channelId">$channel.name</td>
 		#createCell($channel.isOp($user))
 		#createCell($channel.hasVoice($user))
 		#createCell($channel.isHalfOp($user))

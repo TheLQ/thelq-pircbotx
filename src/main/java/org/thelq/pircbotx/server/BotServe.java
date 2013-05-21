@@ -73,9 +73,12 @@ public class BotServe extends Serve {
 
 	@Override
 	public String getRealPath(String path) {
+		//Set home page to index.vm
 		if(path.equals("/"))
-			//Use homepage
 			path = "/index.vm";
+		//Add .vm if nessesary to path
+		else if(!path.endsWith(".vm"))
+			path = path + ".vm";
 		return rootPath + path;
 	}
 
