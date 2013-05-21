@@ -16,16 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.thelq.pircbotx.commands;
 
 import lombok.Getter;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.ModeEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.TopicEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.thelq.pircbotx.BasicCommand;
+import org.thelq.pircbotx.Stats;
 
 /**
  *
@@ -37,9 +44,55 @@ public class StatsListener extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
 		ListenerUtils.getStats(event).getReceivedMessages().incrementAndGet();
 	}
 
+	@Override
+	public void onAction(ActionEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onNotice(NoticeEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onJoin(JoinEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onPart(PartEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onKick(KickEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onMode(ModeEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onNickChange(NickChangeEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+
+	@Override
+	public void onTopic(TopicEvent event) throws Exception {
+		ListenerUtils.addHistory(event);
+	}
+	
 	
 	
 }

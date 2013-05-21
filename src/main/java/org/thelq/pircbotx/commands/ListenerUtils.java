@@ -43,4 +43,8 @@ public final class ListenerUtils {
 	public static void incrimentCommands(Event event) {
 		getStats(event).getReceivedCommands().incrementAndGet();
 	}
+	
+	public static void addHistory(Event event) {
+		getStats(event).addHistoryEntry(event);
+	}
 }

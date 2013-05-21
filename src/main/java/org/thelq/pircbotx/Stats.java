@@ -22,12 +22,16 @@
  */
 package org.thelq.pircbotx;
 
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormat;
 import org.joda.time.format.PeriodFormatter;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+import org.pircbotx.hooks.Event;
 
 /**
  *
@@ -37,11 +41,17 @@ import org.joda.time.format.PeriodFormatter;
 public class Stats {
 	protected final PeriodFormatter periodFormatter = PeriodFormat.getDefault();
 	protected final DateTime startTime = DateTime.now();
+	protected final LinkedList<Event> history = new LinkedList();
 	protected AtomicInteger receivedMessages = new AtomicInteger(0);
 	protected AtomicInteger receivedCommands = new AtomicInteger(0);
 
 	public String getUptime() {
 		return periodFormatter.print(new Duration(startTime, DateTime.now()).toPeriod());
 	}
-	
+
+	public void addHistoryEntry(Event event) {
+		history.add(event);
+		if (history.size() > 100)
+			history.removeFirst();
+	}
 }
