@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  *#
+#set( $page_title = "Home" )
 #set($firstBot = $manager.bots.iterator().next())
 Welcome to TheLQ-PircBotX's Web Interface, running <a href="https://code.google.com/p/pircbotx/">
 PircBotX $field.in("org.pircbotx.PircBotX").VERSION</a>. This provides a detailed view
@@ -24,9 +25,9 @@ in the IRC channel will reflect immediately in this interface
 
 <p><b><i>This site is still being written</i></b>
 
-#set( $page_title = "Home" )
+<h4>Overview</h4>
 #foreach($curBot in $manager.getBots()) 
-	<h4>Bot #$curBot.botId</h4>
+	<h5><a href="botDetail?botId=$curBot.botId">Bot #$curBot.botId</a></h5>
 	<dl class="dl-horizontal">
 	<dt>Server</dt><dd>$curBot.configuration.serverHostname<dd>
 	<dt>Port</dt><dd>$curBot.configuration.serverPort</dd>
