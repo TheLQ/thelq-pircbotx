@@ -43,13 +43,17 @@ import org.thelq.pircbotx.server.BotServe;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Main {
-	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();;
+	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
+	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()
-				.setName("TheLQ-testing")
 				.setLogin("LQ")
 				.setAutoNickChange(true);
+		if(PRODUCTION)
+			templateConfig.setName("TheLQ-PircBotX");
+		else
+			templateConfig.setName("TheLQ-BotTest");
 
 		//Load nickserv data
 		Properties passwords = new Properties();
@@ -79,7 +83,7 @@ public class Main {
 
 		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
 		serve.runInBackground();
-
+		
 		//Connect
 		MANAGER.start();
 	}
