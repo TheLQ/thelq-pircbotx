@@ -20,6 +20,7 @@ package org.thelq.pircbotx.server;
 
 import Acme.Serve.Serve;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -52,8 +53,10 @@ public class BotServe extends Serve {
 				//.put(ARG_WORK_DIRECTORY, "c:\\users")
 				.build(), System.out);
 
-		File classesFolder = new File("src\\main\\resources");
-		if (classesFolder.exists())
+		File classesFolder;
+		if ((classesFolder = new File("src\\main\\resources")).exists())
+			rootPath = classesFolder.getAbsolutePath();
+		else if ((classesFolder = new File("app")).exists())
 			rootPath = classesFolder.getAbsolutePath();
 		else
 			rootPath = new File(".").getAbsolutePath();
