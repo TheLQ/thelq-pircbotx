@@ -93,7 +93,7 @@ public class BotServe extends Serve {
 			context.put("StringUtils", StringUtils.class);
 			
 			//Handle bot parameter
-			String botIdRaw = request.getParameter("bot");
+			String botIdRaw = request.getParameter("botId");
 			if(StringUtils.isNotBlank(botIdRaw))
 				context.put("bot", Main.MANAGER.getBotById(Integer.parseInt(botIdRaw)));
 			
