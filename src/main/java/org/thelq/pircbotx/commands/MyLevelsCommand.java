@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import org.pircbotx.User;
+import org.pircbotx.UserLevel;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.thelq.pircbotx.BasicCommand;
@@ -44,18 +45,7 @@ public class MyLevelsCommand extends ListenerAdapter implements BasicCommand {
 		String[] messageParts = event.getMessage().split(" ");
 		boolean isBot = messageParts.length == 2 && messageParts[1].equalsIgnoreCase("bot");
 		User user = isBot ? event.getBot().getUserBot() : event.getUser();
-
-		List<String> modes = new ArrayList();
-		if (event.getChannel().isOp(user))
-			modes.add("op");
-		if (event.getChannel().hasVoice(user))
-			modes.add("voice");
-		if (event.getChannel().isOwner(user))
-			modes.add("owner");
-		if (event.getChannel().isSuperOp(user))
-			modes.add("superop");
-		if (event.getChannel().isHalfOp(user))
-			modes.add("halfop");
-		event.respond((isBot ? "I am" : "You are") + ": " + modes.toString());
+		
+		event.respond((isBot ? "I am" : "You are") + ": " + user.getUserLevels(event.getChannel()).toString());
 	}
 }
