@@ -38,8 +38,8 @@ public class LevelsListCommand extends ListenerAdapter implements BasicCommand {
 		if (event.getMessage().startsWith("?levelslist")) {
 			ListenerUtils.incrimentCommands(event);
 			event.respond("Ops: " + getUserNames(event.getChannel().getOps())
-					+ " | Voices" + getUserNames(event.getChannel().getVoices())
-					+ " | Owners" + getUserNames(event.getChannel().getOwners())
+					+ " | Voices: " + getUserNames(event.getChannel().getVoices())
+					+ " | Owners: " + getUserNames(event.getChannel().getOwners())
 					+ " | Super ops: " + getUserNames(event.getChannel().getSuperOps())
 					+ " | Half ops: " + getUserNames(event.getChannel().getHalfOps()));
 		}
