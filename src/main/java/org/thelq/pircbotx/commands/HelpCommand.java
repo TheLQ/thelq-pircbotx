@@ -46,7 +46,7 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 		String[] messageParts = message.split(" ");
 		if (messageParts.length > 2)
 			event.respond("Too many arguments");
-		else if (messageParts.length == 2)
+		else if (messageParts.length == 2) {
 			//User gave us a command, find it and show the help
 			for (Listener curListener : event.getBot().getConfiguration().getListenerManager().getListeners()) {
 				if (!(curListener instanceof BasicCommand))
@@ -58,16 +58,16 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 					event.respond(getCommandName(command) + " help: " + command.getHelp());
 					return;
 				}
-				//If we get here then nothing was found
-				event.respond("Command " + messageParts[1] + " doesn't exist");
 			}
-		else {
+			//If we get here then nothing was found
+			event.respond("Command " + messageParts[1] + " doesn't exist");
+		} else {
 			//Build a list of names of all the available commands
 			List<String> commands = new ArrayList();
 			for (Listener curListener : event.getBot().getConfiguration().getListenerManager().getListeners())
 				if (curListener instanceof BasicCommand)
 					commands.add(getCommandName((BasicCommand) curListener));
-			
+
 			//Compile and send
 			event.respond("Available commands: " + StringUtils.join(commands, ", "));
 		}
