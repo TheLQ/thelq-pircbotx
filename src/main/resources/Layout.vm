@@ -48,7 +48,7 @@
 	<div class="row-fluid">
 		<div class="span2">
 			#foreach($curBot in $manager.bots)
-				<a href="botDetail?botId=$curBot.botId">$curBot.configuration.serverHostname</a>
+				<b><a href="botDetail?botId=$curBot.botId">$curBot.configuration.serverHostname</a></b>
 				<ul>
 				#foreach($curChannel in $curBot.userChannelDao.allChannels)
 					<li><a href="channelDetail?channelId=$curChannel.channelId">$curChannel.name</a></li>
