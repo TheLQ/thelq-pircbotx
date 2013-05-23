@@ -38,14 +38,22 @@ import org.thelq.pircbotx.Stats;
  *
  * @author Leon
  */
-public class StatsListener extends ListenerAdapter implements BasicCommand {
+public class StatsCommand extends ListenerAdapter implements BasicCommand {
 	@Getter
 	protected String help = "Get stats";
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
 		ListenerUtils.addHistory(event);
-		ListenerUtils.getStats(event).getReceivedMessages().incrementAndGet();
+		Stats botStats = ListenerUtils.getStats(event);
+		botStats.getReceivedMessages().incrementAndGet();
+		
+		if(event.getMessage().startsWith("?stats")) {
+			event.respond("Processed " + botStats.getReceivedMessages() + " messages, "
+					+ botStats.getReceivedCommands() + " commands, "
+					+ "for " + botStats.getUptime());
+			event.respond("More data available at http://thelq-pircbotx.thelq.cloudbees.net");
+		}
 	}
 
 	@Override
