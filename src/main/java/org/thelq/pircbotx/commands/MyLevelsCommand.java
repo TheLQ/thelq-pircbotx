@@ -37,7 +37,7 @@ public class MyLevelsCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		if (!event.getMessage().startsWith("?mylevels"))
+		if (!ListenerUtils.isCommand(event.getMessage(), "mylevels"))
 			return;
 
 		ListenerUtils.incrimentCommands(event);

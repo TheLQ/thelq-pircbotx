@@ -34,7 +34,7 @@ public class UptimeCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		if (!event.getMessage().startsWith("?uptime"))
+		if (!ListenerUtils.isCommand(event.getMessage(), "uptime"))
 			return;
 		
 		//Done, inform the user

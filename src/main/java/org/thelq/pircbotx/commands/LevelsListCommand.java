@@ -35,7 +35,7 @@ public class LevelsListCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		if (event.getMessage().startsWith("?levelslist")) {
+		if (ListenerUtils.isCommand(event.getMessage(), "levelslist")) {
 			ListenerUtils.incrimentCommands(event);
 			event.respond("Ops: " + getUserNames(event.getChannel().getOps())
 					+ " | Voices: " + getUserNames(event.getChannel().getVoices())

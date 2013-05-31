@@ -33,7 +33,7 @@ public class IdentifiedCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		if (event.getMessage().startsWith("?identified")) {
+		if (ListenerUtils.isCommand(event.getMessage(), "identified")) {
 			ListenerUtils.incrimentCommands(event);
 			event.respond(event.getUser().isVerified() ? "You are identified" : "You are not identified");
 		}

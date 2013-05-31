@@ -48,7 +48,7 @@ public class StatsCommand extends ListenerAdapter implements BasicCommand {
 		Stats botStats = ListenerUtils.getStats(event);
 		botStats.getReceivedMessages().incrementAndGet();
 		
-		if(event.getMessage().startsWith("?stats")) {
+		if(ListenerUtils.isCommand(event.getMessage(), "stats")) {
 			event.respond("Processed " + botStats.getReceivedMessages() + " messages, "
 					+ botStats.getReceivedCommands() + " commands, "
 					+ "for " + botStats.getUptime());

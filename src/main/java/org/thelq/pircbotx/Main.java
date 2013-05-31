@@ -18,16 +18,15 @@
  */
 package org.thelq.pircbotx;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
+import org.apache.commons.lang.StringUtils;
 import org.pircbotx.Configuration;
-import org.pircbotx.MultiBotManager;
-import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -45,6 +44,7 @@ import org.thelq.pircbotx.server.BotServe;
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
 	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
+	public static final String PREFIX = PRODUCTION ? "?" : "!";
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()

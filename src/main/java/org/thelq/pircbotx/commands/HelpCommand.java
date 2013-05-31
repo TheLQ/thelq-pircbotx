@@ -38,8 +38,8 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		String message = event.getMessage().toLowerCase();
-		if (!message.startsWith("?help"))
+		String message = event.getMessage();
+		if (!ListenerUtils.isCommand(message, "help"))
 			return;
 
 		ListenerUtils.incrimentCommands(event);

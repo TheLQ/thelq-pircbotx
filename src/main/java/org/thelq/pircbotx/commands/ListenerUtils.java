@@ -22,8 +22,10 @@
  */
 package org.thelq.pircbotx.commands;
 
+import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.thelq.pircbotx.Main;
+import static org.thelq.pircbotx.Main.PREFIX;
 import org.thelq.pircbotx.Stats;
 
 /**
@@ -46,5 +48,9 @@ public final class ListenerUtils {
 	
 	public static void addHistory(Event event) {
 		getStats(event).addHistoryEntry(event);
+	}
+	
+	public static boolean isCommand(String message, String command) {
+		return StringUtils.startsWithIgnoreCase(message, PREFIX + command);
 	}
 }

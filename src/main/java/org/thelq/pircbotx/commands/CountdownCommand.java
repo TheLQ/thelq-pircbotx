@@ -25,7 +25,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
-import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.thelq.pircbotx.BasicCommand;
 
@@ -53,7 +52,7 @@ public class CountdownCommand extends AbstractAlarmListener implements BasicComm
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		if (!event.getMessage().startsWith("?countdown"))
+		if (!ListenerUtils.isCommand(event.getMessage(), "countdown"))
 			return;
 		
 		ListenerUtils.incrimentCommands(event);
