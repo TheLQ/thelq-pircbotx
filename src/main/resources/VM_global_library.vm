@@ -44,11 +44,11 @@
 	#elseif($curEvent.class.simpleName == "PartEvent")
 		<td>*</td><td>#printUser($curEvent.user) left</td>
 	#elseif($curEvent.class.simpleName == "NoticeEvent")
-		<td><b>$curEvent.user.nick</b></td><td><b>$curEvent.notice</b></td>
+		<td class="nowrap"><b>$curEvent.user.nick</b></td><td><b>$curEvent.notice</b></td>
 	#elseif($curEvent.class.simpleName == "ActionEvent")
-		<td><i>$curEvent.user.nick</i></td><td><i>$curEvent.action</i></td>
+		<td class="nowrap"><i>$curEvent.user.nick</i></td><td><i>$curEvent.action</i></td>
 	#elseif($curEvent.class.simpleName == "MessageEvent")
-		<td>$curEvent.user.nick</td><td>$curEvent.message</td>
+		<td class="nowrap">$curEvent.user.nick</td><td>$curEvent.message</td>
 	#else
 		<td>Unknown channel event</td><td>$curEvent</td>
 	#end
