@@ -51,7 +51,7 @@ import org.thelq.pircbotx.Main;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class NYECommand extends ListenerAdapter implements BasicCommand {
+public class NewYearsCommand extends ListenerAdapter implements BasicCommand {
 	/**
 	 * Times of all NYE events relative to UTC and their timezone(s). Sorted for 
 	 * ease of access
