@@ -39,6 +39,7 @@ import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
 import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.NewYearsCommand;
+import org.thelq.pircbotx.commands.NickUpdateListener;
 import org.thelq.pircbotx.commands.StatsCommand;
 import org.thelq.pircbotx.commands.UptimeCommand;
 import org.thelq.pircbotx.server.BotServe;
@@ -87,6 +88,7 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new CountdownCommand());
 		templateConfig.getListenerManager().addListener(new NewYearsCommand());
 		templateConfig.getListenerManager().addListener(new StatsCommand());
+		templateConfig.getListenerManager().addListener(new NickUpdateListener());
 
 		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
 		serve.runInBackground();
