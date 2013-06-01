@@ -19,14 +19,20 @@
 package org.thelq.pircbotx;
 
 import com.google.common.io.Resources;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.Configuration;
-import org.pircbotx.hooks.managers.ListenerManager;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
-import org.pircbotx.hooks.types.GenericMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -45,12 +51,13 @@ public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
 	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
 	public static final String PREFIX = PRODUCTION ? "?" : "!";
+
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()
 				.setLogin("LQ")
 				.setAutoNickChange(true);
-		if(PRODUCTION)
+		if (PRODUCTION)
 			templateConfig.setName("TheLQ-PircBotX");
 		else
 			templateConfig.setName("TheLQ-BotTest");
@@ -83,8 +90,38 @@ public class Main {
 
 		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
 		serve.runInBackground();
-		
+
+		if (PRODUCTION)
+			startKeepAlive();
+
 		//Connect
 		MANAGER.start();
+	}
+
+	protected static void startKeepAlive() {
+		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
+				.daemon(true)
+				.namingPattern("cloudbees-keepalive-%d")
+				.build());
+		executor.scheduleAtFixedRate(new Runnable() {
+			protected Logger log = LoggerFactory.getLogger(getClass());
+
+			@Override
+			public void run() {
+				try {
+					//Set up the initial connection
+					log.info("Running keepalive");
+					HttpURLConnection connection = (HttpURLConnection) new URL("http://thelq-pircbotx.thelq.cloudbees.net/").openConnection();
+					connection.setRequestMethod("GET");
+					connection.setReadTimeout(10000);
+
+					connection.connect();
+					if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+						throw new RuntimeException("Unknown return code " + connection.getResponseCode());
+				} catch (Throwable e) {
+					log.error("Error encountered when running keepalive", e);
+				}
+			}
+		}, 0, 90, TimeUnit.MINUTES);
 	}
 }
