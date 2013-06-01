@@ -42,7 +42,6 @@ import org.thelq.pircbotx.commands.NewYearsCommand;
 import org.thelq.pircbotx.commands.NickUpdateListener;
 import org.thelq.pircbotx.commands.StatsCommand;
 import org.thelq.pircbotx.commands.UptimeCommand;
-import org.thelq.pircbotx.server.BotServe;
 
 /**
  * Main class

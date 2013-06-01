@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thelq.pircbotx.server;
+package org.thelq.pircbotx;
 
 import Acme.Serve.Serve;
 import com.google.common.collect.ImmutableMap;
