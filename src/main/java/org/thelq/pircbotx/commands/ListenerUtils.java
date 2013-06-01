@@ -25,7 +25,6 @@ package org.thelq.pircbotx.commands;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.thelq.pircbotx.Main;
-import static org.thelq.pircbotx.Main.PREFIX;
 import org.thelq.pircbotx.Stats;
 
 /**
@@ -33,6 +32,7 @@ import org.thelq.pircbotx.Stats;
  * @author Leon
  */
 public final class ListenerUtils {
+	public static final String PREFIX = Main.PRODUCTION ? "?" : "!";
 
 	private ListenerUtils() {
 		//Do not create

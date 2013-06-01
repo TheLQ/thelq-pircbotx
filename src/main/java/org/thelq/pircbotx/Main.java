@@ -51,7 +51,6 @@ import org.thelq.pircbotx.server.BotServe;
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
 	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
-	public static final String PREFIX = PRODUCTION ? "?" : "!";
 
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
