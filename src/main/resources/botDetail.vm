@@ -63,8 +63,11 @@
 	##Skip mode notifications
 	#if($curEvent.class.simpleName != "ModeEvent" || $curEvent.user)
 		<tr>
-		<td style="white-space:nowrap;">$date.format('yyyy-M-d H:m:s',$curEvent.timestamp)</td>
-		<td>$display.alt($curEvent.channel.name, "*")</td>
+		<td class="nowrap #historyClass($curEvent.type)">$curEvent.timestamp</td>
+		<td class="nowrap #historyClass($curEvent.type)">$StringUtils.join($curEvent.channels, ", ")</td>
+		<td class="nowrap #historyClass($curEvent.type)">$StringUtils.join($curEvent.users, ", ")</td>
+		<td class="nowrap #historyClass($curEvent.type)">$curEvent.message</td>
+		
 		#createHistoryData($curEvent)
 		</tr>
 	#else

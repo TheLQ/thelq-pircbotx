@@ -39,6 +39,14 @@
 		.nowrap {
 			white-space:nowrap;
 		}
+
+		.bold {
+			font-weight:bold;
+		}
+		
+		.italic {
+			font-style:italic;
+		}
 	</style>
 
 	<!-- jQuery -->

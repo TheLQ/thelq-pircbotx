@@ -22,7 +22,13 @@
  */
 package org.thelq.pircbotx.commands;
 
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.thelq.pircbotx.Main;
 import org.thelq.pircbotx.Stats;
@@ -33,23 +39,36 @@ import org.thelq.pircbotx.Stats;
  */
 public final class ListenerUtils {
 	public static final String PREFIX = Main.PRODUCTION ? "?" : "!";
+	protected static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.mediumDateTime();
 
 	private ListenerUtils() {
 		//Do not create
 	}
-	
+
 	public static Stats getStats(Event event) {
 		return Main.MANAGER.getStats(event.getBot().getBotId());
 	}
-	
+
 	public static void incrimentCommands(Event event) {
 		getStats(event).getReceivedCommands().incrementAndGet();
 	}
-	
-	public static void addHistory(Event event) {
-		getStats(event).addHistoryEntry(event);
+
+	public static void addHistory(Event event, Stats.HistoryType type, Channel channel, User user, String message) {
+		getStats(event).addHistoryEntry(new Stats.HistoryEntry(type,
+				FORMATTER_DATE.print(event.getTimestamp()),
+				ImmutableList.of(channel),
+				ImmutableList.of(user),
+				message));
 	}
-	
+
+	public static void addHistory(Event event, Stats.HistoryType type, List<Channel> channels, List<User> users, String message) {
+		getStats(event).addHistoryEntry(new Stats.HistoryEntry(type,
+				FORMATTER_DATE.print(event.getTimestamp()),
+				channels,
+				users,
+				message));
+	}
+
 	public static boolean isCommand(String message, String command) {
 		return StringUtils.startsWithIgnoreCase(message, PREFIX + command);
 	}

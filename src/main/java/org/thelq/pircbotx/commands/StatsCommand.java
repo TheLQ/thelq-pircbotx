@@ -18,7 +18,9 @@
  */
 package org.thelq.pircbotx.commands;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -30,7 +32,6 @@ import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.TopicEvent;
-import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.thelq.pircbotx.BasicCommand;
 import org.thelq.pircbotx.Stats;
 
@@ -44,11 +45,11 @@ public class StatsCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.NORMAL, event.getChannel(), event.getUser(), event.getMessage());
 		Stats botStats = ListenerUtils.getStats(event);
 		botStats.getReceivedMessages().incrementAndGet();
-		
-		if(ListenerUtils.isCommand(event.getMessage(), "stats")) {
+
+		if (ListenerUtils.isCommand(event.getMessage(), "stats")) {
 			event.respond("Processed " + botStats.getReceivedMessages() + " messages, "
 					+ botStats.getReceivedCommands() + " commands, "
 					+ "for " + botStats.getUptime());
@@ -57,50 +58,66 @@ public class StatsCommand extends ListenerAdapter implements BasicCommand {
 	}
 
 	@Override
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+		ListenerUtils.addHistory(event, Stats.HistoryType.NORMAL, null, event.getUser(), event.getMessage());
+	}
+
+	@Override
 	public void onAction(ActionEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.ITALIC, event.getChannel(), event.getUser(), event.getAction());
 	}
 
 	@Override
 	public void onNotice(NoticeEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.BOLD, event.getChannel(), event.getUser(), event.getNotice());
 	}
 
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND, event.getChannel(), event.getUser(), getLongname(event.getUser()) + " joined");
 	}
 
 	@Override
 	public void onPart(PartEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND, event.getChannel(), event.getUser(), getLongname(event.getUser()) + " parted");
 	}
 
 	@Override
 	public void onKick(KickEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
+				ImmutableList.of(event.getChannel()),
+				ImmutableList.of(event.getSource(), event.getRecipient()),
+				getLongname(event.getSource()) + " kicked " + getLongname(event.getRecipient()));
 	}
 
 	@Override
 	public void onMode(ModeEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		if (event.getUser() != null)
+			ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
+					event.getChannel(),
+					event.getUser(),
+					getLongname(event.getUser()) + " set mode to " + event.getMode());
 	}
 
 	@Override
 	public void onNickChange(NickChangeEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
-	}
-
-	@Override
-	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		//Use long version so we can use old nick
+		User user = event.getUser();
+		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
+				ImmutableList.copyOf(event.getUser().getChannels()),
+				ImmutableList.of(user),
+				event.getOldNick() + "!" + user.getLogin() + "@" + user.getHostmask() + " changed nick to " + event.getNewNick());
 	}
 
 	@Override
 	public void onTopic(TopicEvent event) throws Exception {
-		ListenerUtils.addHistory(event);
+		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
+				event.getChannel(),
+				event.getUser(),
+				getLongname(event.getUser()) + " changed topic to " + event.getTopic());
 	}
-	
-	
-	
+
+	protected String getLongname(User user) {
+		return user.getNick() + "!" + user.getLogin() + "@" + user.getHostmask();
+	}
 }

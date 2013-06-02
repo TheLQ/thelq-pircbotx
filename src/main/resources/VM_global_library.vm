@@ -28,6 +28,16 @@
 	#end
 #end
 
+#macro ( historyClass $type )
+	#if($curEvent.type == "ITALIC")
+		italic
+	#elseif($curEvent.type == "BOLD")
+		bold
+	#elseif($curEvent.type == "BACKGROUND")
+		muted
+	#end
+#end
+
 #macro ( createHistoryData $curEvent )
 	#if($curEvent.class.simpleName == "TopicEvent")
 		<td>*</td><td>Topic changed to $curEvent.topic by #printUser($curEvent.user)</td>
