@@ -54,11 +54,11 @@ public final class ListenerUtils {
 	}
 
 	public static void addHistory(Event event, Stats.HistoryType type, Channel channel, User user, String message) {
-		getStats(event).addHistoryEntry(new Stats.HistoryEntry(type,
-				FORMATTER_DATE.print(event.getTimestamp()),
-				ImmutableList.of(channel),
-				ImmutableList.of(user),
-				message));
+		addHistory(event, 
+				type, 
+				channel != null ? ImmutableList.of(channel) : ImmutableList.<Channel>of(), 
+				user != null ? ImmutableList.of(user) : ImmutableList.<User>of(), 
+				message);
 	}
 
 	public static void addHistory(Event event, Stats.HistoryType type, List<Channel> channels, List<User> users, String message) {
