@@ -82,11 +82,11 @@
 <tbody>
 #foreach($curHistoryEntry in $manager.getStats($channel.bot.botId).history)
 	##Skip mode notifications
-	#if($curEvent.channels.contains($channel))
+	#if($curHistoryEntry.channels.contains($channel))
 		<tr>
-		<td class="nowrap #historyClass($curEvent.type)">$curEvent.timestamp</td>
-		<td class="nowrap #historyClass($curEvent.type)">$curEvent.users</td>
-		<td class="nowrap #historyClass($curEvent.type)">$curEvent.message</td>
+		<td class="nowrap #historyClass($curHistoryEntry.type)">$curHistoryEntry.timestamp</td>
+		<td class="nowrap #historyClass($curHistoryEntry.type)">$curHistoryEntry.userNames</td>
+		<td class="nowrap #historyClass($curHistoryEntry.type)">$curHistoryEntry.message</td>
 		</tr>
 	#else
 		##<td>Unknown event</td><td>$curEvent</td>
