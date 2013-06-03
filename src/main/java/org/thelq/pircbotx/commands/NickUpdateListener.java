@@ -60,8 +60,10 @@ public class NickUpdateListener extends ListenerAdapter {
 		//The old bot just quit, take over
 		event.getBot().sendIRC().changeNick(event.getBot().getConfiguration().getName());
 		event.getBot().sendIRC().identify(event.getBot().getConfiguration().getNickservPassword());
-		for (Channel curChannel : event.getBot().getUserChannelDao().getAllChannels())
-			curChannel.send().cycle();
+		
+		//Disabled, all current servers have a properly setup chanserv that autovoices on nick change
+		//for (Channel curChannel : event.getBot().getUserChannelDao().getAllChannels())
+		//	curChannel.send().cycle();
 	}
 
 	protected boolean needRenaming(Event event) {
