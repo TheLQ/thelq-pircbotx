@@ -115,6 +115,7 @@ public class Main {
 					URL pingUrl = new URL("http://isitup.org/thelq-pircbotx.thelq.cloudbees.net");
 					HttpURLConnection connection = (HttpURLConnection) pingUrl.openConnection();
 					connection.setRequestMethod("GET");
+					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2");
 					connection.setReadTimeout(10000);
 
 					connection.connect();
