@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.Configuration;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import org.thelq.pircbotx.commands.UptimeCommand;
  * Main class
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
 	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
@@ -97,6 +99,7 @@ public class Main {
 	}
 
 	protected static void startKeepAlive() {
+		log.info("Starting cloudbees keepalive");
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
 				.daemon(true)
 				.namingPattern("cloudbees-keepalive-%d")
@@ -109,7 +112,7 @@ public class Main {
 				try {
 					//Set up the initial connection
 					log.info("Running keepalive");
-					URL pingUrl = new URL("http://www.downforeveryoneorjustme.com/http://thelq-pircbotx.thelq.cloudbees.net/");
+					URL pingUrl = new URL("http://isitup.org/thelq-pircbotx.thelq.cloudbees.net");
 					HttpURLConnection connection = (HttpURLConnection) pingUrl.openConnection();
 					connection.setRequestMethod("GET");
 					connection.setReadTimeout(10000);
