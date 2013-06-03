@@ -19,10 +19,8 @@
 package org.thelq.pircbotx;
 
 import com.google.common.io.Resources;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Properties;
@@ -111,7 +109,8 @@ public class Main {
 				try {
 					//Set up the initial connection
 					log.info("Running keepalive");
-					HttpURLConnection connection = (HttpURLConnection) new URL("http://thelq-pircbotx.thelq.cloudbees.net/").openConnection();
+					URL pingUrl = new URL("http://www.downforeveryoneorjustme.com/http://thelq-pircbotx.thelq.cloudbees.net/");
+					HttpURLConnection connection = (HttpURLConnection) pingUrl.openConnection();
 					connection.setRequestMethod("GET");
 					connection.setReadTimeout(10000);
 
