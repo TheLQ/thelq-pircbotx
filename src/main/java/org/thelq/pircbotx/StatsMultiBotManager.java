@@ -22,8 +22,10 @@
  */
 package org.thelq.pircbotx;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashMap;
 import java.util.Map;
+import org.pircbotx.Configuration;
 import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 
@@ -39,9 +41,9 @@ public class StatsMultiBotManager extends MultiBotManager {
 	}
 
 	@Override
-	protected void startBot(PircBotX bot) {
-		super.startBot(bot);
+	protected ListenableFuture startBot(PircBotX bot) {
 		statsMap.put(bot.getBotId(), new Stats());
+		return super.startBot(bot);
 	}
 	
 }
