@@ -166,8 +166,8 @@
 					<groupId>commons-logging</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-digester</artifactId>
-					<groupId>commons-digester</groupId>
+					<artifactId>commons-collections</artifactId>
+					<groupId>commons-collections</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
