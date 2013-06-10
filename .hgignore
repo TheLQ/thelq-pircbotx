@@ -1,4 +1,4 @@
 syntax: glob
 target/**
 nb-configuration.xml
-src/main/resources/nickserv.properties
+src/main/resources/pircbotx.properties

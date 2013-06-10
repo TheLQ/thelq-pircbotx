@@ -62,19 +62,19 @@ public class Main {
 			templateConfig.setName("TheLQ-BotTest");
 
 		//Load nickserv data
-		Properties passwords = new Properties();
-		passwords.load(new FileInputStream(new File(Resources.getResource("nickserv.properties").toURI())));
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(new File(Resources.getResource("pircbotx.properties").toURI())));
 
 		//Servers
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.freenode.org")
 				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(passwords.getProperty("freenode"))
+				.setNickservPassword(properties.getProperty("freenode"))
 				.buildConfiguration());
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.swiftirc.net")
 				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(passwords.getProperty("swiftirc"))
+				.setNickservPassword(properties.getProperty("swiftirc"))
 				.buildConfiguration());
 
 		//Various Listeners and commands
