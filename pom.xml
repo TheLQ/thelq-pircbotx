@@ -114,6 +114,9 @@
 	</build>
 
 	<dependencies>
+		<!-- 
+			Core libraries
+		-->
 		<!-- Our IRC Library -->
 		<dependency>
 			<groupId>org.pircbotx</groupId>
@@ -139,6 +142,17 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.12</version>
 		</dependency>
+		
+		<!--
+			Web Server
+		-->
+		<!-- Tiny Java web server -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>3.0-beta-5</version>
+		</dependency>
+		<!-- Velocity page templates and tools -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity-tools</artifactId>
@@ -158,11 +172,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>tjws</artifactId>
-			<version>3.0-beta-5</version>
-		</dependency>
+		<!-- Redirect commons log to slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
