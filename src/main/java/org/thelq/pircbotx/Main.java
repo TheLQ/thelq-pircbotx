@@ -84,7 +84,7 @@ public class Main {
 		serve.runInBackground();
 
 		if (PRODUCTION)
-			new KeepAlive(properties);
+			KeepAlive.create(properties);
 
 		//Connect
 		MANAGER.start();

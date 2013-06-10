@@ -28,9 +28,16 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
  */
 @Slf4j
 public class KeepAlive {
+	protected static boolean created = false;
 	
-
-	public KeepAlive(Properties properties) {
+	private KeepAlive() {
+		//Do not allow instances
+	}
+	
+	public static void create(Properties properties) {
+		if(created)
+			throw new RuntimeException("Cannot create keepAlive twice");
+		created = true;
 		log.info("Starting cloudbees keepalive");
 		//Build infinate generator iterator
 		int counter = 1;
@@ -55,7 +62,7 @@ public class KeepAlive {
 				.build());
 		KeepAliveRunner keepAliveRunner = new KeepAliveRunner(Iterators.cycle(generators));
 		executor.scheduleAtFixedRate(keepAliveRunner, 0, 15, TimeUnit.MINUTES);
-		
+
 		//Execute
 		keepAliveRunner.run();
 	}
@@ -64,7 +71,7 @@ public class KeepAlive {
 	@RequiredArgsConstructor
 	public static class KeepAliveRunner implements Runnable {
 		protected final Iterator<ConnectionGenerator> generatorIterator;
-		
+
 		@Override
 		public void run() {
 			ConnectionGenerator curGenerator = generatorIterator.next();
