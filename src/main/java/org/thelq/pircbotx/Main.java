@@ -21,17 +21,9 @@ package org.thelq.pircbotx;
 import com.google.common.io.Resources;
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -92,39 +84,9 @@ public class Main {
 		serve.runInBackground();
 
 		if (PRODUCTION)
-			startKeepAlive();
+			new KeepAlive(properties);
 
 		//Connect
 		MANAGER.start();
-	}
-
-	protected static void startKeepAlive() {
-		log.info("Starting cloudbees keepalive");
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
-				.daemon(true)
-				.namingPattern("cloudbees-keepalive-%d")
-				.build());
-		executor.scheduleAtFixedRate(new Runnable() {
-			protected Logger log = LoggerFactory.getLogger(getClass());
-
-			@Override
-			public void run() {
-				try {
-					//Set up the initial connection
-					log.info("Running keepalive");
-					URL pingUrl = new URL("http://downorisitjustme.com/res.php?url=thelq-pircbotx.thelq.cloudbees.net");
-					HttpURLConnection connection = (HttpURLConnection) pingUrl.openConnection();
-					connection.setRequestMethod("GET");
-					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2");
-					connection.setReadTimeout(10000);
-
-					connection.connect();
-					if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-						throw new RuntimeException("Unknown return code " + connection.getResponseCode());
-				} catch (Throwable e) {
-					log.error("Error encountered when running keepalive", e);
-				}
-			}
-		}, 0, 90, TimeUnit.MINUTES);
 	}
 }
