@@ -69,12 +69,12 @@ public class Main {
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.freenode.org")
 				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(properties.getProperty("freenode"))
+				.setNickservPassword(properties.getProperty("nickserv.freenode"))
 				.buildConfiguration());
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.swiftirc.net")
 				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(properties.getProperty("swiftirc"))
+				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
 				.buildConfiguration());
 
 		//Various Listeners and commands
