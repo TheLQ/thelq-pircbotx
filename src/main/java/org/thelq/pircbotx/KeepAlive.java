@@ -67,6 +67,7 @@ public class KeepAlive {
 				generators.add(new PostConnectionGenerator(value, postData));
 			} else
 				break;
+			counter++;
 		}
 
 		//Build thread pool
