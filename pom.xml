@@ -166,10 +166,6 @@
 					<groupId>commons-logging</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>commons-collections</artifactId>
-					<groupId>commons-collections</groupId>
-				</exclusion>
-				<exclusion>
 					<artifactId>commons-digester</artifactId>
 					<groupId>commons-digester</groupId>
 				</exclusion>
@@ -181,17 +177,11 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-		<!-- Direct dependency to fix conflict in velocity-->
+		<!-- Direct dependency to fix version conflict in velocity -->
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.1</version>
-		</dependency>
-		<!-- Direct dependency to fix conflicts in velocity -->
-		<dependency>
-			<artifactId>commons-digester</artifactId>
-			<groupId>commons-digester</groupId>
-			<version>2.1</version>
 		</dependency>
 	</dependencies>
 
