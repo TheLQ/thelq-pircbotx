@@ -86,8 +86,8 @@ public class StatsCommand extends ListenerAdapter implements BasicCommand {
 	public void onKick(KickEvent event) throws Exception {
 		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
 				ImmutableList.of(event.getChannel()),
-				ImmutableList.of(event.getSource(), event.getRecipient()),
-				getLongname(event.getSource()) + " kicked " + getLongname(event.getRecipient()));
+				ImmutableList.of(event.getUser(), event.getRecipient()),
+				getLongname(event.getUser()) + " kicked " + getLongname(event.getRecipient()));
 	}
 
 	@Override
