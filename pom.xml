@@ -108,6 +108,15 @@
 									</manifestEntries>									
 								</transformer>
 							</transformers>
+							<filters>
+								<!-- Exclude BeanUtils's commons-collections classes which cause conflicts -->
+								<filter>
+									<artifact>commons-beanutils:commons-beanutils</artifact>
+									<excludes>
+										<exclude>org/apache/commons/collections/**</exclude>
+									</excludes>
+								</filter>
+							</filters>
 							<finalName>${project.artifactId}-standalone</finalName>
 						</configuration>
 					</execution>
@@ -165,10 +174,6 @@
 					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>commons-collections</artifactId>
-					<groupId>commons-collections</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<!-- Redirect commons log to slf4j -->
@@ -176,12 +181,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
-		</dependency>
-		<!-- Direct dependency to fix version conflict in velocity -->
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
 		</dependency>
 	</dependencies>
 
