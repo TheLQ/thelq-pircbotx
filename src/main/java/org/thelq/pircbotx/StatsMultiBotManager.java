@@ -33,14 +33,14 @@ import org.pircbotx.PircBotX;
  * @author Leon
  */
 public class StatsMultiBotManager extends MultiBotManager<PircBotX> {
-	protected Map<Integer, Stats> statsMap = new HashMap();
+	protected Map<Integer, Stats> statsMap = new HashMap<Integer, Stats>();
 
 	public Stats getStats(int botNum) {
 		return statsMap.get(botNum);
 	}
 
 	@Override
-	protected ListenableFuture startBot(PircBotX bot) {
+	protected ListenableFuture<Void> startBot(PircBotX bot) {
 		statsMap.put(bot.getBotId(), new Stats());
 		return super.startBot(bot);
 	}
