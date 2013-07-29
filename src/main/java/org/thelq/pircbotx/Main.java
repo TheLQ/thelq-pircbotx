@@ -18,6 +18,7 @@
  */
 package org.thelq.pircbotx;
 
+import org.thelq.pircbotx.keepalive.BotKeepAlive;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import com.google.common.io.Resources;
@@ -89,7 +90,7 @@ public class Main {
 		startWebServer();
 
 		if (PRODUCTION)
-			KeepAlive.create(properties);
+			BotKeepAlive.create(properties);
 
 		//Connect
 		MANAGER.start();

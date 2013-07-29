@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thelq.pircbotx;
+package org.thelq.pircbotx.keepalive;
 
 import com.google.common.collect.Iterators;
 import java.io.IOException;
@@ -41,10 +41,10 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
  * @author Leon
  */
 @Slf4j
-public class KeepAlive {
+public class BotKeepAlive {
 	protected static boolean created = false;
 	
-	private KeepAlive() {
+	private BotKeepAlive() {
 		//Do not allow instances
 	}
 	
