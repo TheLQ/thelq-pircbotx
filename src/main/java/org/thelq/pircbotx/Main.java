@@ -18,11 +18,16 @@
  */
 package org.thelq.pircbotx;
 
+import org.thelq.pircbotx.servlet.PingServlet;
+import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import com.google.common.io.Resources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Configuration;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
@@ -42,6 +47,7 @@ import org.thelq.pircbotx.commands.UptimeCommand;
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
 	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
+	public static Server server;
 
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
@@ -80,12 +86,34 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new StatsCommand());
 		templateConfig.getListenerManager().addListener(new NickUpdateListener());
 
-		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
+		startWebServer();
 
 		if (PRODUCTION)
 			KeepAlive.create(properties);
 
 		//Connect
 		MANAGER.start();
+	}
+	
+	protected static void startWebServer() throws Exception {
+		server = new Server(Integer.parseInt(System.getProperty("app.port", "8080")));
+		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
+		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
+		server.setHandler(servletHandler);
+
+		//Find the root path
+		String rootPath;
+		File classesFolder;
+		if ((classesFolder = new File("src\\main\\resources")).exists())
+			rootPath = classesFolder.getAbsolutePath();
+		else if ((classesFolder = new File("app")).exists())
+			rootPath = classesFolder.getAbsolutePath();
+		else
+			rootPath = new File(".").getAbsolutePath();
+		log.info("Set resource base path to " + rootPath);
+		servletHandler.setResourceBase(rootPath);
+
+		server.start();
 	}
 }
