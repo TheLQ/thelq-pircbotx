@@ -44,7 +44,7 @@ import org.pircbotx.User;
 public class Stats {
 	protected final PeriodFormatter periodFormatter = PeriodFormat.getDefault();
 	protected final DateTime startTime = DateTime.now();
-	protected final LinkedList<HistoryEntry> history = new LinkedList();
+	protected final LinkedList<HistoryEntry> history = new LinkedList<HistoryEntry>();
 	protected AtomicInteger receivedMessages = new AtomicInteger(0);
 	protected AtomicInteger receivedCommands = new AtomicInteger(0);
 
