@@ -61,13 +61,13 @@ public class Stats {
 	@Data
 	public static class HistoryEntry {
 		protected static final Joiner SPACE_JOINER = Joiner.on(", ");
-		protected static final Function FUNCTION_CHANNEL_NAME = new Function<Channel, String>() {
+		protected static final Function<Channel, String> FUNCTION_CHANNEL_NAME = new Function<Channel, String>() {
 			@Override
 			public String apply(Channel input) {
 				return input.getName();
 			}
 		};
-		protected static final Function FUNCTION_USER_NICK = new Function<User, String>() {
+		protected static final Function<User, String> FUNCTION_USER_NICK = new Function<User, String>() {
 			@Override
 			public String apply(User input) {
 				return input.getNick();
