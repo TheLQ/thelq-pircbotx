@@ -29,11 +29,11 @@
 #end
 
 #macro ( historyClass $type )
-	#if($curEvent.type == "ITALIC")
+	#if($type == "ITALIC")
 		italic
-	#elseif($curEvent.type == "BOLD")
+	#elseif($type == "BOLD")
 		bold
-	#elseif($curEvent.type == "BACKGROUND")
+	#elseif($type == "BACKGROUND")
 		muted
 	#end
 #end
