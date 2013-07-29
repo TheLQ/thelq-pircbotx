@@ -158,11 +158,11 @@
 		<!--
 			Web Server
 		-->
-		<!-- Tiny Java web server -->
+		<!-- Jetty -->
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>tjws</artifactId>
-			<version>3.0-beta-6</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>9.0.4.v20130625</version>
 		</dependency>
 		<!-- Velocity page templates and tools -->
 		<dependency>

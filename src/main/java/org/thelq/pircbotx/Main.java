@@ -81,7 +81,6 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new NickUpdateListener());
 
 		BotServe serve = new BotServe(Integer.parseInt(System.getProperty("app.port", "8080")));
-		serve.runInBackground();
 
 		if (PRODUCTION)
 			KeepAlive.create(properties);

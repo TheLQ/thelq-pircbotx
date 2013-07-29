@@ -18,41 +18,43 @@
  */
 package org.thelq.pircbotx;
 
-import Acme.Serve.Serve;
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.tools.view.VelocityLayoutServlet;
-import org.apache.velocity.tools.view.VelocityViewServlet;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Leon
  */
-public class BotServe extends Serve {
-	protected final String rootPath;
+@Slf4j
+public class BotServe {
+	protected final Server server;
 
-	public BotServe(int port) {
-		super(ImmutableMap.builder()
-				.put(ARG_PORT, port)
-				.put(ARG_NOHUP, "nohup")
-				//.put(ARG_WORK_DIRECTORY, "c:\\users")
-				.build(), System.out);
+	public BotServe(int port) throws Exception {
+		this.server = new Server(port);
+		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
+		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
+		server.setHandler(servletHandler);
 
+		//Find the root path
+		String rootPath;
 		File classesFolder;
 		if ((classesFolder = new File("src\\main\\resources")).exists())
 			rootPath = classesFolder.getAbsolutePath();
@@ -60,46 +62,54 @@ public class BotServe extends Serve {
 			rootPath = classesFolder.getAbsolutePath();
 		else
 			rootPath = new File(".").getAbsolutePath();
+		log.info("Set resource base path to " + rootPath);
+		servletHandler.setResourceBase(rootPath);
 
-		VelocityViewServlet velocityServlet = new BotVelocityServlet();
-		addServlet("/", velocityServlet);
-		//Add ping servlet
-		addServlet("/cloudbees-alive", new HttpServlet() {
-			protected Logger log = LoggerFactory.getLogger(getClass());
-
-			@Override
-			protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-				log.info("Received keepalive GET - " + request.getPathInfo());
-			}
-
-			@Override
-			protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
-				log.info("Received keepalive POST - " + request.getPathInfo());
-			}
-		});
-	}
-
-	@Override
-	public String getRealPath(String path) {
-		//Set home page to index.vm
-		if (path.equals("/"))
-			path = "/index.vm";
-		//Add .vm if nessesary to path
-		else if (!path.endsWith(".vm"))
-			path = path + ".vm";
-		return rootPath + path;
+		server.start();
 	}
 
 	@Slf4j
-	@RequiredArgsConstructor
-	protected static class BotVelocityServlet extends VelocityLayoutServlet {
+	public static class PingServlet extends HttpServlet {
+		@Override
+		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			log.info("Received keepalive GET - " + request.getPathInfo());
+		}
+
+		@Override
+		protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+			log.info("Received keepalive POST - " + request.getPathInfo());
+		}
+	}
+
+	@Slf4j
+	public static class BotVelocityServlet extends VelocityLayoutServlet {
+		@Override
+		public void init(ServletConfig config) throws ServletException {
+			super.init(config);
+			getVelocityView().setPublishToolboxes(false);
+		}
+
+		@Override
+		protected void doRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+			String pathInfo = request.getPathInfo();
+			Request requestJetty = (Request) request;
+
+			if (pathInfo.equals("/"))
+				//Requesting home page
+				requestJetty.setPathInfo("/index.vm");
+			else if (pathInfo.lastIndexOf('.') < pathInfo.lastIndexOf('/'))
+				//No extension, assume vm page
+				requestJetty.setPathInfo(pathInfo + ".vm");
+			super.doRequest(request, response);
+		}
+
 		@Override
 		protected void fillContext(Context context, HttpServletRequest request) {
 			log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
 			context.put("manager", Main.MANAGER);
 			context.put("StringUtils", StringUtils.class);
 
-			//Handle bot parameter
+			//Handle botId parameter
 			String botIdRaw = request.getParameter("botId");
 			if (StringUtils.isNotBlank(botIdRaw))
 				context.put("bot", Main.MANAGER.getBotById(Integer.parseInt(botIdRaw)));
