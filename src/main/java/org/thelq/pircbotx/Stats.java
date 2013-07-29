@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Data;
+import lombok.Synchronized;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormat;
@@ -52,6 +53,7 @@ public class Stats {
 		return periodFormatter.print(new Duration(startTime, DateTime.now()).toPeriod());
 	}
 
+	@Synchronized("history")
 	public void addHistoryEntry(HistoryEntry historyEntry) {
 		history.add(historyEntry);
 		if (history.size() > 100)
