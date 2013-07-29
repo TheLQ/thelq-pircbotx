@@ -71,12 +71,8 @@ public class BotKeepAlive {
 		}
 
 		//Build thread pool
-		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
-				.daemon(true)
-				.namingPattern("cloudbees-keepalive-%d")
-				.build());
 		KeepAliveRunner keepAliveRunner = new KeepAliveRunner(Iterators.cycle(generators));
-		executor.scheduleAtFixedRate(keepAliveRunner, 0, 15, TimeUnit.MINUTES);
+		KeepAlive.getExecutor().scheduleAtFixedRate(keepAliveRunner, 0, 15, TimeUnit.MINUTES);
 
 		//Execute
 		keepAliveRunner.run();
