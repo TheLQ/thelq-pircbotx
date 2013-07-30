@@ -118,6 +118,8 @@
 								</filter>
 							</filters>
 							<finalName>${project.artifactId}-standalone</finalName>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>standalone</shadedClassifierName>
 						</configuration>
 					</execution>
 				</executions>
