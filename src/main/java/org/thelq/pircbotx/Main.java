@@ -21,9 +21,7 @@ package org.thelq.pircbotx;
 import org.thelq.pircbotx.keepalive.BotKeepAlive;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
-import com.google.common.io.Resources;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
@@ -39,6 +37,7 @@ import org.thelq.pircbotx.commands.NewYearsCommand;
 import org.thelq.pircbotx.commands.NickUpdateListener;
 import org.thelq.pircbotx.commands.StatsCommand;
 import org.thelq.pircbotx.commands.UptimeCommand;
+import org.thelq.pircbotx.keepalive.JenkinsKeepAlive;
 
 /**
  * Main class
@@ -89,13 +88,15 @@ public class Main {
 
 		startWebServer();
 
-		if (PRODUCTION)
+		if (PRODUCTION) {
 			BotKeepAlive.create(properties);
+			JenkinsKeepAlive.create(properties);
+		}
 
 		//Connect
 		MANAGER.start();
 	}
-	
+
 	protected static void startWebServer() throws Exception {
 		server = new Server(Integer.parseInt(System.getProperty("app.port", "8080")));
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
