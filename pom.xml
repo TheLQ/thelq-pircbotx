@@ -19,14 +19,6 @@
 	</prerequisites>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/etc</directory>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
