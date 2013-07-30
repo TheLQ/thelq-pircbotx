@@ -18,9 +18,6 @@
  */
 package org.thelq.pircbotx;
 
-import com.google.common.io.Resources;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -42,7 +39,7 @@ public class BotTest {
 		getResources(".");
 		getResources("/");
 		Properties properties = new Properties();
-		properties.load(new FileInputStream(new File(Resources.getResource("pircbotx.properties").toURI())));
+		properties.load(BotTest.class.getClassLoader().getResourceAsStream("pircbotx.properties"));
 		assertTrue(properties.size() > 3, "Not enough properties: " + properties.size());
 	}
 
