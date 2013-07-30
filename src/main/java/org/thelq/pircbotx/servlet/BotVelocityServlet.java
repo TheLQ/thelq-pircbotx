@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.thelq.pircbotx.servlet;
 
 import java.io.IOException;
@@ -41,7 +40,6 @@ import org.thelq.pircbotx.Main;
  */
 @Slf4j
 public class BotVelocityServlet extends VelocityLayoutServlet {
-
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -63,7 +61,6 @@ public class BotVelocityServlet extends VelocityLayoutServlet {
 
 	@Override
 	protected void fillContext(Context context, HttpServletRequest request) {
-		log.debug(getVelocityProperty("webapp.resource.loader.cache", "none at all"));
 		context.put("manager", Main.MANAGER);
 		context.put("StringUtils", StringUtils.class);
 		//Handle botId parameter
@@ -101,5 +98,4 @@ public class BotVelocityServlet extends VelocityLayoutServlet {
 				throw new RuntimeException("Invalid channel UUID");
 		}
 	}
-
 }
