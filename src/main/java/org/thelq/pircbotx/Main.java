@@ -28,7 +28,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.thelq.pircbotx.commands.CountdownCommand;
+import org.thelq.pircbotx.commands.ForumHistoryCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
@@ -51,13 +56,22 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
-		Configuration.Builder templateConfig = new Configuration.Builder()
+		Configuration.Builder<PircBotX> templateConfig = new Configuration.Builder<PircBotX>()
 				.setLogin("LQ")
 				.setAutoNickChange(true);
 		if (PRODUCTION)
 			templateConfig.setName("TheLQ-PircBotX");
 		else
 			templateConfig.setName("TheLQ-BotTest");
+		templateConfig.getListenerManager().addListener(new HelpCommand());
+		templateConfig.getListenerManager().addListener(new IdentifiedCommand());
+		templateConfig.getListenerManager().addListener(new UptimeCommand());
+		templateConfig.getListenerManager().addListener(new LevelsListCommand());
+		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
+		templateConfig.getListenerManager().addListener(new CountdownCommand());
+		templateConfig.getListenerManager().addListener(new NewYearsCommand());
+		templateConfig.getListenerManager().addListener(new StatsCommand());
+		templateConfig.getListenerManager().addListener(new NickUpdateListener());
 
 		//Load nickserv data
 		Properties properties = new Properties();
@@ -75,16 +89,17 @@ public class Main {
 				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
 				.buildConfiguration());
 
-		//Various Listeners and commands
-		templateConfig.getListenerManager().addListener(new HelpCommand());
-		templateConfig.getListenerManager().addListener(new IdentifiedCommand());
-		templateConfig.getListenerManager().addListener(new UptimeCommand());
-		templateConfig.getListenerManager().addListener(new LevelsListCommand());
-		templateConfig.getListenerManager().addListener(new MyLevelsCommand());
-		templateConfig.getListenerManager().addListener(new CountdownCommand());
-		templateConfig.getListenerManager().addListener(new NewYearsCommand());
-		templateConfig.getListenerManager().addListener(new StatsCommand());
-		templateConfig.getListenerManager().addListener(new NickUpdateListener());
+		//Special lyokofreak config
+		ListenerManager lyokofreakListeners = new ThreadedListenerManager();
+		for (Listener curListener : templateConfig.getListenerManager().getListeners())
+			lyokofreakListeners.addListener(curListener);
+		lyokofreakListeners.addListener(new ForumHistoryCommand(properties));
+		MANAGER.addBot(new Configuration.Builder(templateConfig)
+				.setServerHostname("irc.mibbit.com")
+				.addAutoJoinChannel("#lyokofreak")
+				.setNickservPassword(properties.getProperty("nickserv.mibbit"))
+				.setListenerManager(lyokofreakListeners)
+				.buildConfiguration());
 
 		startWebServer();
 
