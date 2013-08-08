@@ -125,10 +125,8 @@ public class Main {
 		File classesFolder = new File("src\\main\\resources");
 		if (classesFolder.exists())
 			rootPath = classesFolder.getAbsolutePath();
-		else {
-			rootPath = Main.class.getClassLoader().getResource("index.vm").toExternalForm();
-			rootPath = StringUtils.removeEnd(rootPath, "index.vm");
-		}
+		else
+			rootPath = Main.class.getClassLoader().getResource(".").toExternalForm();
 		log.info("Set resource base path to " + rootPath);
 		servletHandler.setResourceBase(rootPath);
 
