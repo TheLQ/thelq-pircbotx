@@ -35,4 +35,5 @@
 	<logger name="org.eclipse.jetty" level="INFO"/>
 	<logger name="org.apache.commons.digester" level="INFO"/>
 	<logger name="org.apache.velocity" level="INFO"/>
+	<logger name="org.apache.commons.beanutils" level="INFO"/>
 </configuration>
