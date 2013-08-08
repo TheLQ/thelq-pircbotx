@@ -61,26 +61,6 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			<!--Delombok sources for tools like javadoc-->
-			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>0.11.8.0</version>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<addOutputDirectory>false</addOutputDirectory>
-					<sourceDirectory>src/main/java</sourceDirectory>
-					<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
-					<outputDirectory>target/delombok</outputDirectory>
-				</configuration>
-			</plugin>
 			<!-- Make a final single jar -->
 			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
