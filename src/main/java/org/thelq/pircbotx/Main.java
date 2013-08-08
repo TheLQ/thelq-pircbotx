@@ -24,6 +24,7 @@ import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import java.io.File;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -121,13 +122,13 @@ public class Main {
 
 		//Find the root path
 		String rootPath;
-		File classesFolder;
-		if ((classesFolder = new File("src\\main\\resources")).exists())
+		File classesFolder = new File("src\\main\\resources");
+		if (classesFolder.exists())
 			rootPath = classesFolder.getAbsolutePath();
-		else if ((classesFolder = new File("app")).exists())
-			rootPath = classesFolder.getAbsolutePath();
-		else
-			rootPath = new File(".").getAbsolutePath();
+		else {
+			rootPath = Main.class.getClassLoader().getResource("index.vm").toExternalForm();
+			rootPath = StringUtils.removeEnd(rootPath, "index.vm");
+		}
 		log.info("Set resource base path to " + rootPath);
 		servletHandler.setResourceBase(rootPath);
 
