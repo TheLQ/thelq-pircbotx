@@ -52,7 +52,7 @@ import org.thelq.pircbotx.keepalive.JenkinsKeepAlive;
 @Slf4j
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
-	public static final boolean PRODUCTION = System.getProperties().containsKey("app.port");
+	public static final boolean PRODUCTION = System.getProperties().containsKey("qprod");
 	public static Server server;
 
 	public static void main(String[] args) throws Exception {
