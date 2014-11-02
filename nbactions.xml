@@ -7,4 +7,12 @@
                 <goal>org.eclipse.jetty:jetty-maven-plugin:run</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-version-bump</actionName>
+            <displayName>version-bump</displayName>
+            <goals>
+                <goal>versions:display-dependency-updates</goal>
+                <goal>versions:display-plugin-updates</goal>
+            </goals>
+        </action>
     </actions>
