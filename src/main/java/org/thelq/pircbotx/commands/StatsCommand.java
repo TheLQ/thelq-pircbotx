@@ -111,10 +111,13 @@ public class StatsCommand extends ListenerAdapter implements BasicCommand {
 
 	@Override
 	public void onTopic(TopicEvent event) throws Exception {
-		ListenerUtils.addHistory(event, Stats.HistoryType.BACKGROUND,
+		User user = event.getBot().getUserChannelDao().getUser(event.getUser());
+		ListenerUtils.addHistory(event, 
+				Stats.HistoryType.BACKGROUND,
 				event.getChannel(),
-				event.getUser(),
-				getLongname(event.getUser()) + " changed topic to " + event.getTopic());
+				user,
+				user.getHostmask() 
+						+ " changed topic to " + event.getTopic());
 	}
 
 	protected String getLongname(User user) {
