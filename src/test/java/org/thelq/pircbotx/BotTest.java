@@ -39,7 +39,7 @@ public class BotTest {
 		getResources(".");
 		getResources("/");
 		Properties properties = new Properties();
-		properties.load(BotTest.class.getClassLoader().getResourceAsStream("pircbotx.properties"));
+		properties.load(BotTest.class.getClassLoader().getResourceAsStream("/pircbotx.properties"));
 		assertTrue(properties.size() > 3, "Not enough properties: " + properties.size());
 	}
 
