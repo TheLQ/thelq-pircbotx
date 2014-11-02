@@ -52,7 +52,8 @@ import org.thelq.pircbotx.keepalive.JenkinsKeepAlive;
 @Slf4j
 public class Main {
 	public static final StatsMultiBotManager MANAGER = new StatsMultiBotManager();
-	public static final boolean PRODUCTION = System.getProperties().containsKey("qprod");
+	public static final String PRODUCTION_SYSTEM_PROPERTY = "qprod.port";
+	public static final boolean PRODUCTION = System.getProperties().containsKey(PRODUCTION_SYSTEM_PROPERTY);
 	public static Server server;
 
 	public static void main(String[] args) throws Exception {
@@ -114,7 +115,7 @@ public class Main {
 	}
 
 	protected static void startWebServer() throws Exception {
-		server = new Server(Integer.parseInt(System.getProperty("app.port", "8080")));
+		server = new Server(Integer.parseInt(System.getProperty(PRODUCTION_SYSTEM_PROPERTY, "8080")));
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
 		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
