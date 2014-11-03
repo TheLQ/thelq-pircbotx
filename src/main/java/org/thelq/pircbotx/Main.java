@@ -18,6 +18,7 @@
  */
 package org.thelq.pircbotx;
 
+import ch.qos.logback.core.util.Loader;
 import org.thelq.pircbotx.keepalive.BotKeepAlive;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
@@ -77,7 +78,7 @@ public class Main {
 
 		//Load nickserv data
 		Properties properties = new Properties();
-		properties.load(Main.class.getClassLoader().getResourceAsStream("pircbotx.properties"));
+		Loader.getResource("pircbotx.properties", Loader.getClassLoaderOfObject(Main.class)).openStream();
 
 		//Servers
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
