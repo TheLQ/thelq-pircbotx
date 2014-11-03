@@ -23,6 +23,7 @@ import org.thelq.pircbotx.keepalive.BotKeepAlive;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import java.io.File;
+import java.util.Map;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -78,8 +79,8 @@ public class Main {
 
 		//Load nickserv data
 		Properties properties = new Properties();
-		Loader.getResource("pircbotx.properties", Loader.getClassLoaderOfObject(Main.class)).openStream();
-
+		properties.load(Loader.getClassLoaderOfObject(Main.class).getResourceAsStream("pircbotx.properties"));
+		
 		//Servers
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
 				.setServerHostname("irc.freenode.org")
