@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  *
  * @author Leon
  */
-public class StatsMultiBotManager extends MultiBotManager<PircBotX> {
+public class StatsMultiBotManager extends MultiBotManager {
 	protected Map<Integer, Stats> statsMap = new HashMap<Integer, Stats>();
 
 	public Stats getStats(int botNum) {

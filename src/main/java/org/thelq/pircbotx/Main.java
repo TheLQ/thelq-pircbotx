@@ -60,7 +60,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
-		Configuration.Builder<PircBotX> templateConfig = new Configuration.Builder<PircBotX>()
+		Configuration.Builder templateConfig = new Configuration.Builder()
 				.setLogin("LQ")
 				.setAutoNickChange(true);
 		if (PRODUCTION)
@@ -83,12 +83,12 @@ public class Main {
 		
 		//Servers
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.setServerHostname("irc.freenode.org")
+				.addServer("irc.freenode.org")
 				.addAutoJoinChannel("#pircbotx")
 				.setNickservPassword(properties.getProperty("nickserv.freenode"))
 				.buildConfiguration());
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.setServerHostname("irc.swiftirc.net")
+				.addServer("irc.swiftirc.net")
 				.addAutoJoinChannel("#pircbotx")
 				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
 				.buildConfiguration());
@@ -99,7 +99,7 @@ public class Main {
 			lyokofreakListeners.addListener(curListener);
 		lyokofreakListeners.addListener(new ForumHistoryCommand(properties));
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.setServerHostname("irc.mibbit.com")
+				.addServer("irc.mibbit.com")
 				.addAutoJoinChannel("#lyokofreak")
 				.setNickservPassword(properties.getProperty("nickserv.mibbit"))
 				.setListenerManager(lyokofreakListeners)
