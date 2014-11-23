@@ -149,7 +149,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>9.3.0.M0</version>
+			<version>9.3.0.M1</version>
 		</dependency>
 		<!-- Velocity page templates and tools -->
 		<dependency>
