@@ -18,6 +18,7 @@
  */
 package org.thelq.pircbotx.commands;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class HelpCommand extends ListenerAdapter implements BasicCommand {
 			event.respond("Command " + messageParts[1] + " doesn't exist");
 		} else {
 			//Build a list of names of all the available commands
-			List<String> commands = new ArrayList();
+			List<String> commands = Lists.newArrayList();
 			for (Listener curListener : event.getBot().getConfiguration().getListenerManager().getListeners())
 				if (curListener instanceof BasicCommand)
 					commands.add(getCommandName((BasicCommand) curListener));

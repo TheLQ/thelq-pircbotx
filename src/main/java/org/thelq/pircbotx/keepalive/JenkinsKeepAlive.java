@@ -67,7 +67,7 @@ public class JenkinsKeepAlive {
 			log.info("Running jenkins keepalive");
 			for (PircBotX bot : Main.MANAGER.getBots())
 				for (String curJenkinsBot : jenkinsBots) {
-					if (!bot.getUserChannelDao().userExists(curJenkinsBot))
+					if (!bot.getUserChannelDao().containsUser(curJenkinsBot))
 						continue;
 					bot.sendIRC().message(curJenkinsBot, curJenkinsBot + ": jobs");
 				}

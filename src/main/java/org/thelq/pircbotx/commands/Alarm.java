@@ -19,6 +19,7 @@
 package org.thelq.pircbotx.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,7 +63,7 @@ public abstract class Alarm {
 		//Register times we want to notify the user
 		List<Integer> notifySeconds = getNotifySeconds(durationSeconds);
 		notifySeconds.add(0);
-		List<DateTime> notifyTimes = new ArrayList();
+		List<DateTime> notifyTimes = Lists.newArrayList();
 		for (Integer curSecond : notifySeconds) {
 			//If the requested seconds is still in the period, add to list
 			DateTime notifyTime = alarmDate.minusSeconds(curSecond);

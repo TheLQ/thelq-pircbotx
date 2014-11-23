@@ -24,7 +24,6 @@ package org.thelq.pircbotx.commands;
 
 import com.google.common.base.CharMatcher;
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -68,7 +67,7 @@ public class NickUpdateListener extends ListenerAdapter {
 
 	protected boolean needRenaming(Event event) {
 		String botNick = event.getBot().getNick();
-		return CharMatcher.DIGIT.apply(botNick.charAt(botNick.length() - 1));
+		return CharMatcher.DIGIT.matches(botNick.charAt(botNick.length() - 1));
 	}
 
 	protected boolean sharePrefix(Event event, User user) {

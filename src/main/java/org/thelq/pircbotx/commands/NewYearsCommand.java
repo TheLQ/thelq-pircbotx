@@ -18,7 +18,9 @@
  */
 package org.thelq.pircbotx.commands;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 import com.google.common.collect.TreeMultimap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +66,7 @@ public class NewYearsCommand extends ListenerAdapter implements BasicCommand {
 	@Getter
 	protected String help = "NYE countdown";
 	protected DateTime waitingNewYear = null;
-	protected final List<Channel> blacklistedChannels = new ArrayList();
+	protected final List<Channel> blacklistedChannels = Lists.newArrayList();
 
 	static {
 		//Guess what the current new year is
@@ -117,7 +119,7 @@ public class NewYearsCommand extends ListenerAdapter implements BasicCommand {
 
 				@Override
 				public List<Integer> getNotifySeconds(long totalSeconds) {
-					List<Integer> notifySeconds = new ArrayList();
+					List<Integer> notifySeconds = Lists.newArrayList();
 					notifySeconds.add(5 * 60);
 					notifySeconds.add(2 * 60);
 					notifySeconds.add(60);
@@ -225,7 +227,7 @@ public class NewYearsCommand extends ListenerAdapter implements BasicCommand {
 			return null;
 		//Prebuild long form of timezones
 		long nowTime = System.currentTimeMillis();
-		Set<String> tzExtendedSet = new HashSet();
+		Set<String> tzExtendedSet = Sets.newHashSet();
 		for (DateTimeZone curTz : tzList) {
 			if (StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/"))
 				continue;
@@ -237,7 +239,7 @@ public class NewYearsCommand extends ListenerAdapter implements BasicCommand {
 	protected static String getShortNames(Collection<DateTimeZone> tzList) {
 		//Prebuild long form of timezones
 		long nowTime = System.currentTimeMillis();
-		Set<String> tzShortSet = new HashSet();
+		Set<String> tzShortSet = Sets.newHashSet();
 		for (DateTimeZone curTz : tzList) {
 			if (StringUtils.startsWithIgnoreCase(curTz.getID(), "Etc/"))
 				continue;

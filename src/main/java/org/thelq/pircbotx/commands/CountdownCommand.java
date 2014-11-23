@@ -18,6 +18,8 @@
  */
 package org.thelq.pircbotx.commands;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +47,7 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 	protected static PeriodFormatter driftFormatter;
 	protected static PeriodFormatter periodFormatterSec;
 	protected static PeriodFormatter periodFormatterMinSec;
-	protected static Map<User, Alarm> openAlarms = new ConcurrentHashMap();
+	protected static Map<User, Alarm> openAlarms = Maps.newConcurrentMap();
 
 	static {
 		periodFormatterSec = new PeriodFormatterBuilder()
@@ -96,7 +98,7 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 
 			@Override
 			public List<Integer> getNotifySeconds(long totalSeconds) {
-				List<Integer> notifyTimes = new ArrayList();
+				List<Integer> notifyTimes = Lists.newArrayList();
 				for (int i = (int) (totalSeconds % 60); i >= 1; i--)
 					notifyTimes.add(i * 60);
 				notifyTimes.add(30);
@@ -133,7 +135,7 @@ public class CountdownCommand extends ListenerAdapter implements BasicCommand {
 		openAlarms.put(event.getUser(), alarm);
 
 		//Generate notify times
-		List<Integer> notifyTimes = new ArrayList();
+		List<Integer> notifyTimes = Lists.newArrayList();
 		
 			alarm.countdown();
 		openAlarms.remove(event.getUser());

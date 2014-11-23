@@ -131,6 +131,7 @@ public class ForumHistoryCommand extends ListenerAdapter implements BasicCommand
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected ImmutableList<RssEntry> getFeed() throws IOException, DocumentException {
 		log.info("Grabbing lyokofreak feed");
 		URLConnection feedConnection = feedUrl.openConnection();
