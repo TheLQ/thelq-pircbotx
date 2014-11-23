@@ -19,19 +19,15 @@
 package org.thelq.pircbotx;
 
 import ch.qos.logback.core.util.Loader;
-import org.thelq.pircbotx.keepalive.BotKeepAlive;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import java.io.File;
-import java.util.Map;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -108,7 +104,6 @@ public class Main {
 		startWebServer();
 
 		if (PRODUCTION) {
-			BotKeepAlive.create(properties);
 			JenkinsKeepAlive.create(properties);
 		}
 
