@@ -75,7 +75,7 @@ public class Main {
 
 		//Load nickserv data
 		Properties properties = new Properties();
-		properties.load(Loader.getClassLoaderOfObject(Main.class).getResourceAsStream("pircbotx.properties"));
+		properties.load(Loader.getClassLoaderOfObject(Main.class).getResourceAsStream("/pircbotx.properties"));
 		
 		//Servers
 		MANAGER.addBot(new Configuration.Builder(templateConfig)
