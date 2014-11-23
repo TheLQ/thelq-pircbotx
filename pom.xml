@@ -37,6 +37,7 @@
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
 						<exclude>**/nbactions.xml</exclude>
+						<exclude>.hg*</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 					<aggregate>true</aggregate>
