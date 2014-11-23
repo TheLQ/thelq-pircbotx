@@ -96,7 +96,7 @@ public class Main {
 	}
 
 	protected static void startWebServer() throws Exception {
-		server = new Server(Integer.parseInt(System.getProperty(PRODUCTION_SYSTEM_PROPERTY, "8080")));
+		server = new Server(Integer.parseInt(System.getProperty(PRODUCTION_SYSTEM_PROPERTY, "8000")));
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
 		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
