@@ -28,11 +28,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Configuration;
-import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.managers.ListenerManager;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.thelq.pircbotx.commands.CountdownCommand;
-import org.thelq.pircbotx.commands.ForumHistoryCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
 import org.thelq.pircbotx.commands.LevelsListCommand;
@@ -87,18 +83,6 @@ public class Main {
 				.addServer("irc.swiftirc.net")
 				.addAutoJoinChannel("#pircbotx")
 				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
-				.buildConfiguration());
-
-		//Special lyokofreak config
-		ListenerManager lyokofreakListeners = new ThreadedListenerManager();
-		for (Listener curListener : templateConfig.getListenerManager().getListeners())
-			lyokofreakListeners.addListener(curListener);
-		lyokofreakListeners.addListener(new ForumHistoryCommand(properties));
-		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.addServer("irc.mibbit.com")
-				.addAutoJoinChannel("#lyokofreak")
-				.setNickservPassword(properties.getProperty("nickserv.mibbit"))
-				.setListenerManager(lyokofreakListeners)
 				.buildConfiguration());
 
 		startWebServer();
