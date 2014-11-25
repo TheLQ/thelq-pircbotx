@@ -85,7 +85,7 @@ public class Main {
 				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
 				.buildConfiguration());
 
-		startWebServer();
+		startWebServer(properties);
 
 		if (PRODUCTION) {
 			JenkinsKeepAlive.create(properties);
@@ -95,8 +95,8 @@ public class Main {
 		MANAGER.start();
 	}
 
-	protected static void startWebServer() throws Exception {
-		server = new Server(Integer.parseInt(System.getProperty(PRODUCTION_SYSTEM_PROPERTY, "8000")));
+	protected static void startWebServer(Properties properties) throws Exception {
+		server = new Server(Integer.parseInt(properties.getProperty("port", "8000").trim()));
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
 		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
