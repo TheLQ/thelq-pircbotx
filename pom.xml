@@ -93,7 +93,7 @@
 									</excludes>
 								</filter>
 								<!-- Remove Signature files that cause 
-									java.lang.SecurityException: Invalid signature file digest for Manifest main attributes -->
+								java.lang.SecurityException: Invalid signature file digest for Manifest main attributes -->
 								<filter>
 									<artifact>*:*</artifact>
 									<excludes>
@@ -141,6 +141,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.moandjiezana.toml</groupId>
+			<artifactId>toml4j</artifactId>
+			<version>0.2.0</version>
 		</dependency>
 		
 		<!--

@@ -24,7 +24,6 @@ package org.thelq.pircbotx.keepalive;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,12 +38,13 @@ import org.thelq.pircbotx.Main;
 public class JenkinsKeepAlive {
 	protected static boolean created = false;
 
-	public static void create(Properties properties) {
+	public static void create() {
 		Preconditions.checkState(!created, "Already created");
 		created = true;
 		ImmutableList.Builder<String> jenkinsBotsBuilder = ImmutableList.builder();
 		for (int i = 1;; i++) {
-			String value = properties.getProperty("keepAliveJenkins." + i);
+			
+			String value = "";
 			if (value == null)
 				break;
 			jenkinsBotsBuilder.add(value);

@@ -18,11 +18,14 @@
  */
 package org.thelq.pircbotx;
 
-import ch.qos.logback.core.util.Loader;
+import com.moandjiezana.toml.Toml;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
 import java.io.File;
-import java.util.Properties;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -41,6 +44,7 @@ import org.thelq.pircbotx.keepalive.JenkinsKeepAlive;
 
 /**
  * Main class
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -50,6 +54,7 @@ public class Main {
 	public static final boolean PRODUCTION = System.getProperties().containsKey(PRODUCTION_SYSTEM_PROPERTY);
 	public static Server server;
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()
@@ -69,34 +74,41 @@ public class Main {
 		templateConfig.getListenerManager().addListener(new StatsCommand());
 		templateConfig.getListenerManager().addListener(new NickUpdateListener());
 
-		//Load nickserv data
-		Properties properties = new Properties();
-		properties.load(Loader.getClassLoaderOfObject(Main.class).getResourceAsStream("pircbotx.properties"));
-		
-		//Servers
-		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.addServer("irc.freenode.org")
-				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(properties.getProperty("nickserv.freenode"))
-				.buildConfiguration());
-		MANAGER.addBot(new Configuration.Builder(templateConfig)
-				.addServer("irc.swiftirc.net")
-				.addAutoJoinChannel("#pircbotx")
-				.setNickservPassword(properties.getProperty("nickserv.swiftirc"))
-				.buildConfiguration());
+		//Load properties
+		String filename = "thelq-pircbotx.toml";
+		File file = new File(filename);
+		if(!file.exists())
+			file = new File("src/main/resources/" + filename);
+		if(!file.exists())
+			throw new RuntimeException("Cannot find file " + filename);
+		Toml properties = new Toml().parse(file);
+
+		//Join servers
+		for (Toml serverArgsRaw : properties.getTables("server")) {
+			ServerConfig serverArgs = serverArgsRaw.to(ServerConfig.class);
+			log.debug("hostname " + serverArgs.hostname);
+			log.debug("channels " + serverArgs.channels);
+			log.debug("nickserv " + serverArgs.nickserv);
+			MANAGER.addBot(new Configuration.Builder(templateConfig)
+					.addServer(serverArgs.hostname)
+					.addAutoJoinChannels(serverArgs.channels)
+					.setNickservPassword(serverArgs.nickserv)
+					.buildConfiguration()
+			);
+		}
 
 		startWebServer(properties);
 
 		if (PRODUCTION) {
-			JenkinsKeepAlive.create(properties);
+			JenkinsKeepAlive.create();
 		}
 
 		//Connect
 		MANAGER.start();
 	}
 
-	protected static void startWebServer(Properties properties) throws Exception {
-		server = new Server(Integer.parseInt(properties.getProperty("port", "8000").trim()));
+	protected static void startWebServer(Toml properties) throws Exception {
+		server = new Server(properties.getTable("webserver").getLong("port").intValue());
 		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		servletHandler.addServlet(new ServletHolder(new BotVelocityServlet()), "/*");
 		servletHandler.addServlet(new ServletHolder(new PingServlet()), "/cloudbees-alive/*");
@@ -113,5 +125,14 @@ public class Main {
 		servletHandler.setResourceBase(rootPath);
 
 		server.start();
+	}
+	
+	@EqualsAndHashCode
+	@ToString
+	@RequiredArgsConstructor
+	public static class ServerConfig {
+		private final String hostname;
+		private final String nickserv;
+		private final List<String> channels;
 	}
 }
