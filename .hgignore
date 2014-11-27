@@ -1,4 +1,4 @@
 syntax: glob
 target/**
 nb-configuration.xml
-src/main/resources/pircbotx.properties
+src/main/resources/thelq-pircbotx.toml
