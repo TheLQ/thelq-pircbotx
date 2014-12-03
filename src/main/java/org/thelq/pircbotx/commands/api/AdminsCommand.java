@@ -30,6 +30,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.types.GenericEvent;
@@ -61,11 +62,19 @@ public class AdminsCommand extends SimpleCommand {
 	}
 
 	/**
-	 * * Send whois to all admins from servers given WHO list
+	 * Send whois to all admins from servers given WHO list
 	 */
 	@Override
 	public void onUserList(UserListEvent event) throws Exception {
 		sendWhois(event, event.getUsers().stream().map(u -> u.getNick()).collect(Collectors.toList()));
+	}
+
+	/**
+	 * Send whois to a user who just changed to an admin nick
+	 */
+	@Override
+	public void onNickChange(NickChangeEvent event) throws Exception {
+		sendWhois(event, ImmutableList.of(event.getNewNick()));
 	}
 
 	protected void sendWhois(GenericEvent event, Iterable<String> nicks) {
@@ -82,13 +91,18 @@ public class AdminsCommand extends SimpleCommand {
 	 */
 	@Override
 	public void onWhois(WhoisEvent event) throws Exception {
+		List<String> channels = event.getBot().getUserChannelDao().getAllChannels()
+				.stream()
+				.map((c) -> c.getName())
+				.collect(Collectors.toList());
 		if (!adminNicks.contains(event.getNick()))
 			return;
-		else if (!event.isExists()) {
-			log.debug("Going to wait for user {} to join or message us");
+		else if (!event.isExists() || !channels.removeAll(event.getChannels())) {
+			log.debug("Going to wait for user {} to join or message us", event.getNick());
 			return;
 		} else if (event.isRegistered()) {
 			log.info("Nick " + event.getNick() + " is registered");
+			event.getBot().getUserChannelDao().getUser(event.getNick()).send().notice("Logged in as admin");
 			adminsActive.add(event.getNick());
 		} else {
 			log.info("User " + event.getNick() + " exists but is not registered, sending WHOIS again in " + IDENTIFY_WAIT_MSEC + "msec");
@@ -98,7 +112,7 @@ public class AdminsCommand extends SimpleCommand {
 	}
 
 	public boolean isAdmin(User user) throws InterruptedException {
-		if(!adminsActive.contains(user.getNick())) {
+		if (!adminsActive.contains(user.getNick())) {
 			String message = "Unknown user " + user.getNick() + " tried doing an admin action";
 			log.warn(message);
 			adminNotice(user.getBot(), message);
@@ -106,9 +120,9 @@ public class AdminsCommand extends SimpleCommand {
 		}
 		return true;
 	}
-	
+
 	public void adminNotice(PircBotX bot, String message) {
-		for(String curAdmin : adminsActive)
+		for (String curAdmin : adminsActive)
 			bot.sendIRC().notice(curAdmin, message);
 	}
 
