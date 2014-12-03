@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.List;
 import org.pircbotx.ReplayServer;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
-import org.thelq.pircbotx.commands.AdminsCommand;
+import org.thelq.pircbotx.commands.api.AdminsCommand;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;

@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.thelq.pircbotx.commands;
+package org.thelq.pircbotx.commands.api;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -89,5 +89,5 @@ public abstract class AbstractCommand extends ListenerAdapter {
 		onCommand(event, channel, user, call.args);
 	}
 
-	abstract void onCommand(GenericEvent event, @Nullable Channel channel, User user, ImmutableList<String> args) throws Exception;
+	public abstract void onCommand(GenericEvent event, @Nullable Channel channel, User user, ImmutableList<String> args) throws Exception;
 }

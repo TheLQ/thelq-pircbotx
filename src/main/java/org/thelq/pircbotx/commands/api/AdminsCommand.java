@@ -21,7 +21,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.thelq.pircbotx.commands;
+package org.thelq.pircbotx.commands.api;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -124,7 +124,7 @@ public class AdminsCommand extends AbstractCommand {
 	}
 
 	@Override
-	void onCommand(GenericEvent event, Channel channel, User user, ImmutableList<String> args) {
+	public void onCommand(GenericEvent event, Channel channel, User user, ImmutableList<String> args) {
 		List<String> adminsActiveNick = Lists.newArrayList();
 		event.respond("Active: " + adminsActiveNick.toString());
 	}

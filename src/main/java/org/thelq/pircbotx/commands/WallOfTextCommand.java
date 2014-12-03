@@ -23,6 +23,7 @@
  */
 package org.thelq.pircbotx.commands;
 
+import org.thelq.pircbotx.commands.api.AbstractCommand;
 import com.google.common.collect.ImmutableList;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
