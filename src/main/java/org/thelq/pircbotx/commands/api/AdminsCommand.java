@@ -16,11 +16,6 @@
  * You should have received a copy of the GNU General Public License along with
  * TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.thelq.pircbotx.commands.api;
 
 import com.google.common.collect.ImmutableList;
@@ -44,7 +39,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  * @author Leon
  */
 @Slf4j
-public class AdminsCommand extends AbstractCommand {
+public class AdminsCommand extends SimpleCommand {
 	public static final long IDENTIFY_WAIT_MSEC = 1000 * 5;
 	public final Map<String, Long> adminInactivePings = new HashMap<>();
 

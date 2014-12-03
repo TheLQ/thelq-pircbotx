@@ -16,28 +16,19 @@
  * You should have received a copy of the GNU General Public License along with
  * TheLQ-PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.thelq.pircbotx.commands;
-
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
-import org.pircbotx.hooks.types.GenericEvent;
-import org.thelq.pircbotx.commands.api.SimpleCommand;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.thelq.pircbotx.commands.api;
 
 /**
  *
  * @author Leon
  */
-public class RawCommand extends SimpleCommand {
-
-	public RawCommand() {
-		super("raw", "send raw message to IRC server");
+public abstract class SimpleCommand extends AbstractCommand implements AbstractCommand.CommandRun {
+	public SimpleCommand(String name, String help) {
+		addCommand(name, help, this);
 	}
-
-	@Override
-	public void onCommand(GenericEvent event, Channel channel, User user, ImmutableList<String> args) throws Exception {
-		event.getBot().sendRaw().rawLine(StringUtils.join(args, " "));
-	}
-
 }

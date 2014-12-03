@@ -69,22 +69,22 @@ public class CommandCall {
 	 * @return
 	 */
 	@Nullable
-	public static CommandCall parse(@NonNull GenericEvent event, @NonNull String message, @NonNull String command) {
+	public static CommandCall parse(@NonNull GenericEvent event, @NonNull String message) {
 		String botNick = event.getBot().getNick();
 
-		List<String> parts = trySplitCommandNoPrefix(message, PREFIX, command);
+		List<String> parts = trySplitCommandNoPrefix(message, PREFIX);
 		if (parts == null)
-			parts = trySplitCommandNoPrefix(message, botNick + " ", command);
+			parts = trySplitCommandNoPrefix(message, botNick + " ");
 		if (parts == null)
-			parts = trySplitCommandNoPrefix(message, botNick + ": ", command);
+			parts = trySplitCommandNoPrefix(message, botNick + ": ");
 		if (parts == null)
 			return null;
 
 		return new CommandCall(parts.remove(0), ImmutableList.copyOf(parts));
 	}
 
-	protected static List<String> trySplitCommandNoPrefix(String input, String prefix, String command) {
-		if (StringUtils.startsWithIgnoreCase(input, prefix + command))
+	protected static List<String> trySplitCommandNoPrefix(String input, String prefix) {
+		if (StringUtils.startsWithIgnoreCase(input, prefix))
 			return splitCommandQuotable(input.substring(prefix.length()));
 		return null;
 	}

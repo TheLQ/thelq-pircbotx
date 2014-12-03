@@ -21,6 +21,10 @@ package org.thelq.pircbotx.commands.api;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -46,19 +50,27 @@ public abstract class AbstractCommand extends ListenerAdapter {
 				.filter(AbstractCommand.class)
 				.toSet();
 	}
+	public static final Random RANDOM = new Random();
 
-	@NonNull
-	public final String name;
-	@NonNull
-	public final String help;
-	public final boolean admin;
+	private final Map<String, CommandEntry> commands = Maps.newHashMap();
 
-	public AbstractCommand(String name) {
-		this(name, "", false);
+	public String addTemporaryCommand(String help, final CommandTemporary run) {
+		String commandNameRaw = UUID.randomUUID().toString().replace("-", "");
+		final String commandName = commandNameRaw.substring(0, commandNameRaw.length() / 2);
+		addCommand(commandName, help, (event, channel, user, args) -> {
+			if (run.onCommandTemp(event, channel, user, args))
+				removeCommand(commandName);
+		});
+		return commandName;
 	}
 
-	public AbstractCommand(String name, String help) {
-		this(name, help, false);
+	public void addCommand(String command, String help, CommandRun run) {
+		CommandEntry entry = new CommandEntry(run, help);
+		commands.put(command, entry);
+	}
+
+	public void removeCommand(String command) {
+		commands.remove(command);
 	}
 
 	@Override
@@ -72,17 +84,45 @@ public abstract class AbstractCommand extends ListenerAdapter {
 	}
 
 	public void parseMessage(GenericEvent event, @Nullable Channel channel, User user, String message) throws Exception {
-		CommandCall call = CommandCall.parse(event, message, name);
+		//Parse the raw message into a command call if its in the valid format
+		CommandCall call = CommandCall.parse(event, message);
 		if (call == null)
 			return;
 
+		CommandEntry command = commands.get(call.command);
+		if (command == null)
+			return;
+
 		//Block failed admins
-		if (admin && !Main.admins.isAdmin(user)) {
+		if (command.admin && !Main.admins.isAdmin(user)) {
 			return;
 		}
 
-		onCommand(event, channel, user, call.args);
+		command.run.onCommand(event, channel, user, call.args);
 	}
 
-	public abstract void onCommand(GenericEvent event, @Nullable Channel channel, User user, ImmutableList<String> args) throws Exception;
+	@RequiredArgsConstructor
+	protected static class CommandEntry {
+		@NonNull
+		public final CommandRun run;
+		@NonNull
+		public final String help;
+		public final boolean admin;
+
+		public CommandEntry(CommandRun run) {
+			this(run, "", false);
+		}
+
+		public CommandEntry(CommandRun run, String help) {
+			this(run, help, false);
+		}
+	}
+
+	public static interface CommandRun {
+		public void onCommand(GenericEvent event, @Nullable Channel channel, User user, ImmutableList<String> args) throws Exception;
+	}
+
+	public static interface CommandTemporary {
+		public boolean onCommandTemp(GenericEvent event, @Nullable Channel channel, User user, ImmutableList<String> args) throws Exception;
+	}
 }
