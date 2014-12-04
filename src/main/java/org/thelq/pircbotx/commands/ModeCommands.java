@@ -44,8 +44,8 @@ import org.thelq.pircbotx.commands.api.CommandCall;
  * @author Leon
  */
 @Slf4j
-public class ChannelModeratedCommand extends AbstractCommand {
-	public ChannelModeratedCommand() {
+public class ModeCommands extends AbstractCommand {
+	public ModeCommands() {
 		addCommand("m", "", this::onCommandStart);
 	}
 

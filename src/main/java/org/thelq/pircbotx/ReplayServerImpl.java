@@ -38,7 +38,7 @@ import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.NewYearsCommand;
 import org.thelq.pircbotx.commands.NickUpdateListener;
 import org.thelq.pircbotx.commands.UptimeCommand;
-import org.thelq.pircbotx.commands.ChannelModeratedCommand;
+import org.thelq.pircbotx.commands.ModeCommands;
 
 /**
  *
@@ -68,7 +68,7 @@ public class ReplayServerImpl extends ReplayServer {
 				.addListener(new NewYearsCommand())
 				//.addListener(new StatsCommand())
 				.addListener(new NickUpdateListener())
-				.addListener(new ChannelModeratedCommand())
+				.addListener(new ModeCommands())
 				.addListener(Main.admins = new AdminsCommand(adminNicks))
 		);
 
