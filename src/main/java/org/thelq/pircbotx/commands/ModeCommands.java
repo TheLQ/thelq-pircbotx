@@ -46,10 +46,15 @@ import org.thelq.pircbotx.commands.api.CommandCall;
 @Slf4j
 public class ModeCommands extends AbstractCommand {
 	public ModeCommands() {
-		addCommand("m", "", this::onCommandStart);
+		addCommand("m", "Set current channel moderated", this::cmdChannelModerated);
 	}
 
-	public void onCommandStart(GenericEvent event, Channel channel, User user, ImmutableList<String> args) throws Exception {
+	public void cmdChannelModerated(GenericEvent event, Channel channel, User user, ImmutableList<String> args) throws Exception {
+		if(channel == null) {
+			user.send().notice("Cannot be run through pm");
+			return;
+		}
+		
 		if (StringUtils.split(channel.getMode(), ' ')[0].contains("m")) {
 			user.send().notice("Channel is already at +m");
 		}
@@ -57,7 +62,7 @@ public class ModeCommands extends AbstractCommand {
 		Set<UserLevel> ourLevels = event.getBot().getUserChannelDao().getLevels(channel, user);
 		if (!ourLevels.contains(UserLevel.OP)) {
 			//Lets hope we have chanserv rights
-			user.send().notice("Acquiring op");
+			user.send().notice("Acquiring op from chanserv");
 			WaitForQueue queue = new WaitForQueue(event.getBot());
 			event.getBot().sendRaw().rawLineNow("chanserv op " + channel.getName() + " " + event.getBot().getNick());
 			while (true) {
