@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -42,8 +44,8 @@ import org.pircbotx.hooks.types.GenericEvent;
 @Slf4j
 public class AdminsCommand extends SimpleCommand {
 	public static final long IDENTIFY_WAIT_MSEC = 1000 * 5;
-	public final Map<String, Long> adminInactivePings = new HashMap<>();
-
+	public final Object stateLock = new Object();
+	public final Map<String, CountDownLatch> adminInactivePings = new HashMap<>();
 	public final ImmutableList<String> adminNicks;
 	public final List<String> adminsActive = new ArrayList<>();
 
@@ -77,6 +79,7 @@ public class AdminsCommand extends SimpleCommand {
 		sendWhois(event, ImmutableList.of(event.getNewNick()));
 	}
 
+	@Synchronized("stateLock")
 	protected void sendWhois(GenericEvent event, Iterable<String> nicks) {
 		List<String> inactiveAdmins = adminsInactive();
 		for (String nick : nicks)
@@ -91,24 +94,30 @@ public class AdminsCommand extends SimpleCommand {
 	 */
 	@Override
 	public void onWhois(WhoisEvent event) throws Exception {
-		List<String> channels = event.getBot().getUserChannelDao().getAllChannels()
-				.stream()
-				.map((c) -> c.getName())
-				.collect(Collectors.toList());
-		if (!adminNicks.contains(event.getNick()))
-			return;
-		else if (!event.isExists() || !channels.removeAll(event.getChannels())) {
-			log.debug("Going to wait for user {} to join or message us", event.getNick());
-			return;
-		} else if (event.isRegistered()) {
-			log.info("Nick " + event.getNick() + " is registered");
-			event.getBot().getUserChannelDao().getUser(event.getNick()).send().notice("Logged in as admin");
-			adminsActive.add(event.getNick());
-		} else {
-			log.info("User " + event.getNick() + " exists but is not registered, sending WHOIS again in " + IDENTIFY_WAIT_MSEC + "msec");
-			Thread.sleep(IDENTIFY_WAIT_MSEC);
-			event.getBot().sendIRC().whois(event.getNick());
+		synchronized (stateLock) {
+			List<String> channels = event.getBot().getUserChannelDao().getAllChannels()
+					.stream()
+					.map((c) -> c.getName())
+					.collect(Collectors.toList());
+			String nick = event.getNick();
+			if (!adminNicks.contains(nick) || adminsActive.contains(nick))
+				return;
+			if (!event.isExists() || !channels.removeAll(event.getChannels())) {
+				log.debug("Going to wait for user {} to join or message us", event.getNick());
+				return;
+			}
+			if (event.isRegistered()) {
+				log.info("Nick " + event.getNick() + " is registered");
+				event.getBot().getUserChannelDao().getUser(event.getNick()).send().notice("Logged in as admin");
+				adminsActive.add(event.getNick());
+				return;
+			}
 		}
+
+		//Have to re-whois the user
+		log.info("User " + event.getNick() + " exists but is not registered, sending WHOIS again in " + IDENTIFY_WAIT_MSEC + "msec");
+		Thread.sleep(IDENTIFY_WAIT_MSEC);
+		event.getBot().sendIRC().whois(event.getNick());
 	}
 
 	public boolean isAdmin(User user) throws InterruptedException {
