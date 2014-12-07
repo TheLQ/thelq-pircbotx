@@ -23,19 +23,22 @@
  */
 package org.thelq.pircbotx.commands;
 
-import org.thelq.pircbotx.commands.api.AbstractCommand;
 import com.google.common.collect.ImmutableList;
+import org.thelq.pircbotx.commands.api.AbstractCommand;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.UserLevel;
 import org.pircbotx.Utils;
 import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.OpEvent;
-import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.thelq.pircbotx.commands.api.CommandCall;
 
@@ -46,25 +49,55 @@ import org.thelq.pircbotx.commands.api.CommandCall;
 @Slf4j
 public class ModeCommands extends AbstractCommand {
 	public ModeCommands() {
-		addCommand("m", "Set current channel moderated", this::cmdChannelModerated);
+		addCommandChannelMode('m', "moderated (only voice+ users can talk)", true,
+				(event, args) -> args.isEmpty() ? "" : args.get(0));
+		addCommandChannelMode('b', "user ban, argument can be a hostmask or nick", false, (event, args) -> {
+			String rawHostmask = args.get(0);
+			UserHostmask parsedHostmask = new UserHostmask(event.getBot(), rawHostmask);
+			if (StringUtils.isAnyBlank(parsedHostmask.getLogin(), parsedHostmask.getHostname())) {
+				//This is not a hostmask, must be a user nick
+				if (event.getBot().getUserChannelDao().containsUser(rawHostmask)) {
+					event.respond("User " + rawHostmask + " doesn't exist");
+				}
+				log.debug("parsedHostmask before getUser: " + parsedHostmask);
+				parsedHostmask = event.getBot().getUserChannelDao().getUser(rawHostmask);
+			}
+			return parsedHostmask.getHostmask();
+		});
 	}
 
-	public void cmdChannelModerated(GenericEvent event, Channel channel, User user, ImmutableList<String> args) throws Exception {
-		if(channel == null) {
-			user.send().notice("Cannot be run through pm");
-			return;
-		}
-		
-		if (StringUtils.split(channel.getMode(), ' ')[0].contains("m")) {
-			user.send().notice("Channel is already at +m");
+	protected final void addCommandChannelMode(char modeLetter, @NonNull String helpSuffix, boolean channelMode, @NonNull BiFunction<GenericEvent, ImmutableList<String>, String> argHandler) {
+		addCommand("" + modeLetter, "Set channel " + helpSuffix, (event, channel, user, args)
+				-> setChannelMode(event, channel, user, modeLetter, true, channelMode, argHandler.apply(event, args)));
+		addCommand("-" + modeLetter, "Set channel " + helpSuffix, (event, channel, user, args)
+				-> setChannelMode(event, channel, user, modeLetter, false, channelMode, argHandler.apply(event, args)));
+	}
+
+	protected void setChannelMode(@NonNull GenericEvent event, Channel channel, @NonNull User user, char modeLetter, boolean enabled, boolean channelMode, @NonNull String arg) throws Exception {
+		if (channel == null) {
+			if (StringUtils.isBlank(arg)) {
+				user.send().notice("Unknown channel, must run command in channel or in PM");
+				return;
+			}
+			if (!event.getBot().getUserChannelDao().containsChannel(arg)) {
+				user.send().notice("Unknown channel " + arg);
+				return;
+			}
+			channel = event.getBot().getUserChannelDao().getChannel(arg);
+			arg = "";
 		}
 
-		Set<UserLevel> ourLevels = event.getBot().getUserChannelDao().getLevels(channel, user);
+		if (enabled && channelMode && StringUtils.split(channel.getMode(), ' ')[0].contains(String.valueOf(modeLetter))) {
+			user.send().notice("Channel is already at +" + modeLetter);
+		}
+
+		WaitForQueue queue = new WaitForQueue(event.getBot());
+
+		//Need op rights
+		Set<UserLevel> ourLevels = event.getBot().getUserChannelDao().getLevels(channel, event.getBot().getUserBot());
 		if (!ourLevels.contains(UserLevel.OP)) {
-			//Lets hope we have chanserv rights
 			user.send().notice("Acquiring op from chanserv");
-			WaitForQueue queue = new WaitForQueue(event.getBot());
-			event.getBot().sendRaw().rawLineNow("chanserv op " + channel.getName() + " " + event.getBot().getNick());
+			event.getBot().sendRaw().rawLineNow("CHANSERV OP " + channel.getName() + " " + event.getBot().getNick());
 			while (true) {
 				OpEvent opEvent = queue.waitFor(OpEvent.class, 20, TimeUnit.SECONDS);
 				if (opEvent == null) {
@@ -76,24 +109,26 @@ public class ModeCommands extends AbstractCommand {
 					break;
 			}
 			log.debug("Sucesfully opped, waiting for mode set to succeed");
-
-			channel.send().setMode("+m");
-			while (true) {
-				SetModeratedEvent modEvent = queue.waitFor(SetModeratedEvent.class, 20, TimeUnit.SECONDS);
-				if (modEvent == null) {
-					throw new Exception(Utils.format("Timeout waiting for +m in channel {} requested by user {}",
-							channel.getName(), user.getNick()));
-				}
-				log.trace("Received moderated " + modEvent);
-				if (modEvent.getChannel() == channel)
-					break;
-			}
 		}
 
-		String tempCommand = addTemporaryCommand("unset -m for " + channel.getName(), (unevent, unSourceChannel, unUser, unArgs) -> {
-			channel.send().setMode("-m");
-			return true;
-		});
-		user.send().notice(Utils.format("Moderated mode set, use '/msg {} {}' to remove", event.getBot().getNick(), CommandCall.PREFIX + tempCommand));
+		//Change mode
+		String modeChange = (enabled ? "+" : "-") + modeLetter + StringUtils.defaultIfBlank(" " + arg, "");
+		String modeSetRemove = enabled ? "set" : "removed";
+		channel.send().setMode(modeChange);
+		while (true) {
+			ModeEvent modEvent = queue.waitFor(ModeEvent.class, 20, TimeUnit.SECONDS);
+			if (modEvent == null) {
+				throw new Exception(Utils.format("Timeout waiting for {} in channel {} requested by user {}",
+						modeChange, channel.getName(), user.getNick()));
+			}
+			log.trace("Received mode " + modEvent);
+			if (modEvent.getChannel() == channel && modEvent.getUser() == modEvent.getBot().getUserBot())
+				break;
+		}
+		log.debug("Mode change {} succeeded", modeChange);
+
+		String unModeChange = CommandCall.PREFIX + (enabled ? "-" : "") + modeChange.substring(1);
+		user.send().notice(Utils.format("Mode {} {}, use '/msg {} {} {}' to remove", 
+				modeChange, modeSetRemove, event.getBot().getNick(), unModeChange, channel.getName()));
 	}
 }
