@@ -18,6 +18,7 @@
  */
 package org.thelq.pircbotx;
 
+import com.google.common.collect.ImmutableList;
 import com.moandjiezana.toml.Toml;
 import org.thelq.pircbotx.servlet.PingServlet;
 import org.thelq.pircbotx.servlet.BotVelocityServlet;
@@ -31,6 +32,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.pircbotx.Configuration;
+import org.thelq.pircbotx.commands.api.AdminsCommand;
 import org.thelq.pircbotx.commands.CountdownCommand;
 import org.thelq.pircbotx.commands.HelpCommand;
 import org.thelq.pircbotx.commands.IdentifiedCommand;
@@ -38,8 +40,10 @@ import org.thelq.pircbotx.commands.LevelsListCommand;
 import org.thelq.pircbotx.commands.MyLevelsCommand;
 import org.thelq.pircbotx.commands.NewYearsCommand;
 import org.thelq.pircbotx.commands.NickUpdateListener;
+import org.thelq.pircbotx.commands.RawCommand;
 import org.thelq.pircbotx.commands.StatsCommand;
 import org.thelq.pircbotx.commands.UptimeCommand;
+import org.thelq.pircbotx.commands.ModeCommands;
 import org.thelq.pircbotx.keepalive.JenkinsKeepAlive;
 
 /**
@@ -53,9 +57,21 @@ public class Main {
 	public static final String PRODUCTION_SYSTEM_PROPERTY = "qprod.port";
 	public static final boolean PRODUCTION = System.getProperties().containsKey(PRODUCTION_SYSTEM_PROPERTY);
 	public static Server server;
+	public static AdminsCommand admins;
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
+		//Load properties
+		String filename = "thelq-pircbotx.toml";
+		File file = new File(filename);
+		if (!file.exists())
+			file = new File("src/main/resources/" + filename);
+		if (!file.exists())
+			throw new RuntimeException("Cannot find file " + filename);
+		Toml properties = new Toml().parse(file);
+
+		ImmutableList<String> adminNicks = ImmutableList.copyOf(properties.getTable("admin").getList("nicks", String.class));
+
 		//Initial configuration
 		Configuration.Builder templateConfig = new Configuration.Builder()
 				.setLogin("LQ")
@@ -68,20 +84,15 @@ public class Main {
 				.addListener(new CountdownCommand())
 				.addListener(new NewYearsCommand())
 				.addListener(new StatsCommand())
-				.addListener(new NickUpdateListener());
+				.addListener(new NickUpdateListener())
+				.addListener(new ModeCommands())
+				.addListener(new RawCommand())
+				.addListener(admins = new AdminsCommand(adminNicks));
+		templateConfig.getListenerManager().setExceptionHandler(new AdminManagerExceptionHandler());
 		if (PRODUCTION)
 			templateConfig.setName("TheLQ-PircBotX");
 		else
 			templateConfig.setName("TheLQ-BotTest");
-
-		//Load properties
-		String filename = "thelq-pircbotx.toml";
-		File file = new File(filename);
-		if (!file.exists())
-			file = new File("src/main/resources/" + filename);
-		if (!file.exists())
-			throw new RuntimeException("Cannot find file " + filename);
-		Toml properties = new Toml().parse(file);
 
 		//Join servers
 		for (Toml serverArgsRaw : properties.getTables("server")) {
