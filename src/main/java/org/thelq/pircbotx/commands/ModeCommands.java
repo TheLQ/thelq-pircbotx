@@ -114,7 +114,7 @@ public class ModeCommands extends AbstractCommand {
 		//Change mode
 		String modeChange = (enabled ? "+" : "-") + modeLetter + StringUtils.defaultIfBlank(" " + arg, "");
 		String modeSetRemove = enabled ? "set" : "removed";
-		channel.send().setMode(modeChange);
+		event.getBot().sendRaw().rawLineNow("MODE " + channel.getName() + " " + modeChange);
 		while (true) {
 			ModeEvent modEvent = queue.waitFor(ModeEvent.class, 20, TimeUnit.SECONDS);
 			if (modEvent == null) {
@@ -128,7 +128,7 @@ public class ModeCommands extends AbstractCommand {
 		log.debug("Mode change {} succeeded", modeChange);
 
 		String unModeChange = CommandCall.PREFIX + (enabled ? "-" : "") + modeChange.substring(1);
-		user.send().notice(Utils.format("Mode {} {}, use '/msg {} {} {}' to remove", 
+		user.send().notice(Utils.format("Mode {} {}, use '/msg {} {} {}' to undo", 
 				modeChange, modeSetRemove, event.getBot().getNick(), unModeChange, channel.getName()));
 	}
 }
